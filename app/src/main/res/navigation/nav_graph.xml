@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/passengerListFragment">
+
+    <fragment
+        android:id="@+id/passengerListFragment"
+        android:name="com.example.passengerapp.ui.screens.passengerlist.PassengerListFragment"
+        android:label="fragment_passenger_list"
+        tools:layout="@layout/fragment_passenger_list" >
+        <action
+            android:id="@+id/action_passengerListFragment_to_airlineDetailsFragment"
+            app:destination="@id/airlineDetailsFragment" />
+        <action
+            android:id="@+id/action_passengerListFragment_to_passengerCreatingFragment"
+            app:destination="@id/passengerCreatingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/passengerCreatingFragment"
+        android:name="com.example.passengerapp.ui.screens.passengercreating.PassengerCreatingFragment"
+        android:label="fragment_passenger_creating"
+        tools:layout="@layout/fragment_passenger_creating" />
+    <fragment
+        android:id="@+id/airlineDetailsFragment"
+        android:name="com.example.passengerapp.ui.screens.airline.AirlineDetailsFragment"
+        android:label="fragment_airline_details"
+        tools:layout="@layout/fragment_airline_details" />
+</navigation>

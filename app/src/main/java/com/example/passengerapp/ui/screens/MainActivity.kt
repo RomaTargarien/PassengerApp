@@ -1,7 +1,8 @@
-package com.example.passengerapp
+package com.example.passengerapp.ui.screens
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.passengerapp.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
@@ -11,6 +12,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        viewModel.sayHello()
+        supportActionBar?.hide()
     }
 }
