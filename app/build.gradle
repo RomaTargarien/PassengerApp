@@ -2,6 +2,8 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -96,4 +98,7 @@ dependencies {
     implementation("androidx.paging:paging-runtime:$paging_version")
     implementation("androidx.paging:paging-guava:$paging_version")
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    //CircularProgressBar
+    implementation 'com.mikhaellopez:circularprogressbar:3.1.0'
 }

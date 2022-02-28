@@ -19,14 +19,18 @@ val appModule = module {
 
     single<PassengerRepository> { PassengerRepositoryImpl(get()) }
 
-    viewModel { MainActivityViewModel(get()) }
+    viewModel { MainActivityViewModel() }
 
     viewModel { PassengerListViewModel(get()) }
 }
 
-fun provideRetrofitInstance() = Retrofit.Builder()
-    .baseUrl("https://api.instantwebtools.net/v1/")
-    .addConverterFactory(GsonConverterFactory.create())
-    .build()
+fun provideRetrofitInstance(): Retrofit =
+    Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
-fun provideNetworkApi(retrofit: Retrofit): PassengerApi = retrofit.create(PassengerApi::class.java)
+fun provideNetworkApi(retrofit: Retrofit): PassengerApi =
+    retrofit.create(PassengerApi::class.java)
+
+private const val BASE_URL = "https://api.instantwebtools.net/v1/"

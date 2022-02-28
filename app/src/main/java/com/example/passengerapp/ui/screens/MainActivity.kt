@@ -1,7 +1,7 @@
 package com.example.passengerapp.ui.screens
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.passengerapp.R
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

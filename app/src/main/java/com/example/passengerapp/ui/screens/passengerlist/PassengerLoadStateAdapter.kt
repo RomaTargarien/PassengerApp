@@ -28,7 +28,7 @@ class PassengerLoadStateAdapter(
     }
 
     override fun onBindViewHolder(holder: PassengerLoadStateViewHolder, loadState: LoadState) {
-        holder.bind(loadState,retry)
+        holder.bind(loadState, retry)
     }
 
     override fun onCreateViewHolder(
