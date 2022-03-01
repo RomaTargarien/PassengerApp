@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="airline"
+            type="com.example.passengerapp.model.Airline" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:alpha="0.65"
+        android:background="@drawable/shape_rounded_rectangle">
+
+        <ImageView
+            android:id="@+id/ivAirline"
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:layout_marginTop="30dp"
+            android:scaleType="centerCrop"
+            app:imageUrl="@{airline.logo}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvAirlineTitle"
+            style="@style/TextTitleStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"
+            android:text="@{airline.name}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/ivAirline"
+            app:layout_constraintStart_toStartOf="@+id/ivAirline"
+            app:layout_constraintTop_toBottomOf="@+id/ivAirline"
+            tools:text="Airline" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

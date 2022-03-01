@@ -20,7 +20,6 @@ import com.example.passengerapp.model.Passenger
 import com.example.youngchemist.ui.custom.snack_bar.CustomSnackBar
 import com.example.youngchemist.ui.custom.snack_bar.CustomSnackBar.Companion.setOnClickListener
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

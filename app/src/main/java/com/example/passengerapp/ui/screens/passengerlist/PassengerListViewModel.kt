@@ -33,7 +33,7 @@ class PassengerListViewModel(private val repository: PassengerRepository) : View
     fun undoDelete(passenger: Passenger) {
         viewModelScope.launch {
             val passengerRequest =
-                PassengerRequest(passenger.name, passenger.trips, passenger.airline[0].id)
+                PassengerRequest(passenger.name, passenger.trips, passenger.airline[0].id!!.toInt())
             val result = repository.createPassenger(passengerRequest)
             if (result is Resource.Success) {
                 refreshSharedFlow.emit(Unit)

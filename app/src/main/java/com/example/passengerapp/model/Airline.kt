@@ -1,14 +1,15 @@
 package com.example.passengerapp.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Airline(
-    @SerializedName("country") val country: String,
-    @SerializedName("established") val established: String,
-    @SerializedName("head_quaters") val headQuaters: String,
-    @SerializedName("id") val id: Int,
-    @SerializedName("logo") val logo: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("slogan") val slogan: String,
-    @SerializedName("website") val website: String
+    @Expose @SerializedName("country") val country: String?,
+    @Expose @SerializedName("established") val established: String?,
+    @Expose @SerializedName("head_quaters") val headQuaters: String?,
+    @Expose @SerializedName("id") val id: Double?,
+    @Expose @SerializedName("logo") val logo: String?,
+    @Expose @SerializedName("name") val name: String?,
+    @Expose @SerializedName("slogan") val slogan: String?,
+    @Expose @SerializedName("website") val website: String?
 )

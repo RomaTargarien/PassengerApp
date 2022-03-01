@@ -1,8 +1,10 @@
 package com.example.passengerapp.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.example.passengerapp.model.Airline
 import com.example.passengerapp.model.Passenger
 import com.example.passengerapp.model.request.PassengerRequest
 import com.example.passengerapp.network.PassengerApi
@@ -22,6 +24,14 @@ class PassengerRepositoryImpl(private val passengerApi: PassengerApi) : Passenge
             ),
             pagingSourceFactory = { PassengerPagingSource(passengerApi) }
         ).flow
+    }
+
+    override suspend fun getAllAirlines() = withContext(Dispatchers.IO) {
+        safeCall {
+            val response = passengerApi.getAirlines()
+
+            Resource.Success(response)
+        }
     }
 
     override suspend fun deletePassenger(id: String) = withContext(Dispatchers.IO) {

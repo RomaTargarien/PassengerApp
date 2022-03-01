@@ -1,5 +1,6 @@
 package com.example.passengerapp.network
 
+import com.example.passengerapp.model.Airline
 import com.example.passengerapp.model.PassengersPage
 import com.example.passengerapp.model.request.PassengerRequest
 import com.example.passengerapp.model.response.PassengerResponse
@@ -19,4 +20,7 @@ interface PassengerApi {
 
     @POST("passenger")
     suspend fun createPassenger(@Body requestBody: PassengerRequest): Response<PassengerResponse>
+
+    @GET("airlines")
+    suspend fun getAirlines(): List<Airline>
 }

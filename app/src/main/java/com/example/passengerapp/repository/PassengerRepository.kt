@@ -1,6 +1,7 @@
 package com.example.passengerapp.repository
 
 import androidx.paging.PagingData
+import com.example.passengerapp.model.Airline
 import com.example.passengerapp.model.Passenger
 import com.example.passengerapp.model.request.PassengerRequest
 import com.example.passengerapp.model.response.PassengerResponse
@@ -14,5 +15,7 @@ interface PassengerRepository {
     suspend fun createPassenger(passenger: PassengerRequest): Resource<PassengerResponse>
 
     suspend fun deletePassenger(id: String): Resource<PassengerResponse>
+
+    suspend fun getAllAirlines(): Resource<List<Airline>>
 
 }

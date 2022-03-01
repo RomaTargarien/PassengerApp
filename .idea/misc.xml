@@ -3,12 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/drawable-v24/shape_rounded_rectangle.xml" value="0.135" />
+        <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/drawable-v24/shape_rounded_rectangle_for_edittext.xml" value="0.125" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.1095" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/drawable/shape_custom_snackbar.xml" value="0.1" />
+        <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/drawable/shape_rounded_rectangle_for_button.xml" value="0.133" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/layout/activity_main.xml" value="0.22735507246376813" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/layout/fragment_airline_details.xml" value="0.24003623188405798" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/layout/fragment_passenger_creating.xml" value="0.2" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/layout/fragment_passenger_list.xml" value="0.22282608695652173" />
+        <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/layout/item_airline.xml" value="0.2427536231884058" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/layout/item_custom_snackbar.xml" value="0.12360688956433637" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/layout/item_load_state_footer.xml" value="0.22282608695652173" />
         <entry key="..\:/android-studio-2020.3.1.15-windows/AndroidApps/PassengerApp/app/src/main/res/layout/item_passenger.xml" value="0.3611111111111111" />
