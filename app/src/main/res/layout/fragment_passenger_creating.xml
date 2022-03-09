@@ -48,8 +48,8 @@
                 style="@style/TextTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginStart="@dimen/margin_regular_half"
+                android:layout_marginBottom="@dimen/margin_regular_half"
                 android:text="@string/hi"
                 android:textSize="50sp"
                 app:layout_constraintBottom_toTopOf="@+id/containerPassengerCreating"
@@ -72,7 +72,7 @@
                 android:id="@+id/containerPassengerCreating"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:padding="15dp"
+                android:padding="@dimen/margin_regular"
                 app:layout_constraintBottom_toBottomOf="@+id/guidelineBottom"
                 app:layout_constraintEnd_toStartOf="@+id/guidelineRight"
                 app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
@@ -83,10 +83,8 @@
                     style="@style/TextTitleStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:text="@string/create_your_passenger"
                     android:textSize="26sp"
-                    app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -100,14 +98,13 @@
                     android:alpha="0"
                     app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
                     app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
-                    app:processValidationResult="@{viewModel.nameValidationResult}"
-                    tools:text="Error" />
+                    app:processValidationResult="@{viewModel.nameValidationResult}" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout2"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="@dimen/margin_regular_doubled"
                     android:background="@drawable/shape_rounded_rectangle_for_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -118,8 +115,8 @@
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:hint="@string/name"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
+                        android:paddingStart="@dimen/margin_regular_half"
+                        android:paddingEnd="@dimen/margin_regular_half"
                         android:text="@={viewModel.name}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -137,14 +134,13 @@
                     android:alpha="0"
                     app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
                     app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
-                    app:processValidationResult="@{viewModel.tripsValidationResult}"
-                    tools:text="Error" />
+                    app:processValidationResult="@{viewModel.tripsValidationResult}" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout3"
                     android:layout_width="0dp"
                     android:layout_height="60dp"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="@dimen/margin_regular_doubled"
                     android:background="@drawable/shape_rounded_rectangle_for_button"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -156,8 +152,8 @@
                         android:background="@null"
                         android:hint="@string/trips"
                         android:inputType="number"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp"
+                        android:paddingStart="@dimen/margin_regular_half"
+                        android:paddingEnd="@dimen/margin_regular_half"
                         android:text="@={viewModel.trips}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -170,7 +166,7 @@
                     android:id="@+id/tvChooseAirline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="@dimen/margin_regular"
                     android:onClick="@{view -> viewModel.toggleExpandedAirlinesListState()}"
                     android:text="@string/choose_airline"
                     android:textColor="#2196F3"
@@ -183,8 +179,8 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/containerSelectedAirline"
                     android:layout_width="0dp"
-                    android:layout_marginTop="4dp"
-                    android:padding="4dp"
+                    android:layout_marginTop="@dimen/margin_regular_one_quarter"
+                    android:padding="@dimen/margin_regular_one_quarter"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_rounded_rectangle"
                     android:backgroundTint="@color/white"
@@ -196,7 +192,7 @@
                         android:id="@+id/ivAirlineLogo"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/margin_regular_half"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -205,7 +201,7 @@
                         android:id="@+id/tvAirlineTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="@dimen/margin_regular_half"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/ivAirlineLogo"
                         app:layout_constraintTop_toTopOf="parent"
@@ -216,6 +212,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
+                        android:onClick="@{view -> viewModel.removeAirline()}"
                         android:src="@drawable/ic_baseline_close_24"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -227,7 +224,7 @@
                     android:id="@+id/pbAirlinesState"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="@dimen/margin_regular_one_quarter"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@+id/tvChooseAirline"
                     app:layout_constraintStart_toEndOf="@+id/tvChooseAirline"
@@ -237,32 +234,18 @@
                     android:id="@+id/ivAirlineState"
                     android:layout_width="40dp"
                     android:layout_height="0dp"
-                    android:layout_marginStart="4dp"
-                    android:visibility="visible"
+                    android:layout_marginStart="@dimen/margin_regular_one_quarter"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@+id/tvChooseAirline"
                     app:layout_constraintStart_toEndOf="@+id/tvChooseAirline"
-                    app:layout_constraintTop_toTopOf="@+id/tvChooseAirline"/>
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/bnRetryAirlinesDownload"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:background="@drawable/shape_rounded_rectangle"
-                    android:backgroundTint="#03A9F4"
-                    android:text="@string/retry"
-                    android:textColor="@color/white"
-                    android:visibility="gone"
-                    android:onClick="@{view -> viewModel.downloadAirlines()}"
-                    app:layout_constraintBottom_toBottomOf="@+id/ivAirlineState"
-                    app:layout_constraintStart_toEndOf="@+id/ivAirlineState"
-                    app:layout_constraintTop_toTopOf="@+id/ivAirlineState"/>
-
-
+                    app:layout_constraintTop_toTopOf="@+id/tvChooseAirline" />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/bnCreatePassenger"
-                    android:layout_width="300dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginStart="@dimen/margin_regular_doubled"
+                    android:layout_marginTop="@dimen/margin_regular_one_quarter"
+                    android:layout_marginEnd="@dimen/margin_regular_doubled"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_rounded_rectangle_for_button"
                     android:backgroundTint="@color/black"
@@ -285,7 +268,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/bnCreatePassenger"
                     app:layout_constraintEnd_toEndOf="@+id/bnCreatePassenger"
                     app:layout_constraintStart_toStartOf="@+id/bnCreatePassenger"
-                    app:layout_constraintTop_toBottomOf="@+id/containerSelectedAirline"/>
+                    app:layout_constraintTop_toTopOf="@+id/bnCreatePassenger" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

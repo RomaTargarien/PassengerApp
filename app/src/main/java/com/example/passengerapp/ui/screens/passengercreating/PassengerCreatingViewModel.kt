@@ -12,14 +12,20 @@ import com.example.passengerapp.ui.util.Event
 import com.example.passengerapp.ui.util.Resource
 import com.example.passengerapp.ui.util.TextInputResource
 import com.example.passengerapp.ui.util.toStateFlow
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 
 @FlowPreview
 class PassengerCreatingViewModel(
     private val validation: Validation,
     private val repository: PassengerRepository
 ) : ViewModel() {
+
+    private val _airlineRemovingFlow: MutableSharedFlow<Unit> = MutableSharedFlow()
+    val airlineRemovingFlow: SharedFlow<Unit> = _airlineRemovingFlow
 
     private val _airlinesState: MutableLiveData<Event<Resource<List<Airline>>>> = MutableLiveData()
     val airlinesState: LiveData<Event<Resource<List<Airline>>>> = _airlinesState
@@ -28,49 +34,35 @@ class PassengerCreatingViewModel(
         MutableStateFlow(DEFAULT_VALUE)
     val adapterSelectedAirlinePosition: StateFlow<Int?> = _adapterSelectedAirlinePosition
 
+    private val _isAirlinesListExpanded: MutableStateFlow<Boolean> =
+        MutableStateFlow(DEFAULT_EXPAND)
+    val isAirlinesListExpanded: StateFlow<Boolean> = _isAirlinesListExpanded
+
     val name: MutableStateFlow<String> = MutableStateFlow(DEFAULT_NAME)
     val nameValidationResult =
-        MutableStateFlow<TextInputResource<String>>(TextInputResource.ErrorInput(DEFAULT_VALUE))
-
-    val trips: MutableStateFlow<String> = MutableStateFlow(DEFAULT_TRIPS)
-    val tripsValidationResult =
-        MutableStateFlow<TextInputResource<String>>(TextInputResource.ErrorInput(DEFAULT_VALUE))
+        MutableStateFlow<TextInputResource<String>>(TextInputResource.InputInProcess())
 
     private val _selectedAirline: MutableStateFlow<Airline?> = MutableStateFlow(DEFAULT_VALUE)
     val selectedAirline: StateFlow<Airline?> = _selectedAirline
+
+    val trips: MutableStateFlow<String> = MutableStateFlow(DEFAULT_TRIPS)
+    val tripsValidationResult =
+        MutableStateFlow<TextInputResource<String>>(TextInputResource.InputInProcess())
 
     val createPassengerEnabled =
         combine(nameValidationResult, tripsValidationResult, selectedAirline) { _ ->
             processProgress()
         }.toStateFlow(DEFAULT_PASSENGER_CREATING_ENABLED, viewModelScope)
 
-    private val _isAirlinesListExpanded: MutableStateFlow<Boolean> =
-        MutableStateFlow(DEFAULT_EXPAND)
-    val isAirlinesListExpanded: StateFlow<Boolean> = _isAirlinesListExpanded
-
-    private val _passengerCreatingState: MutableLiveData<Resource<String>> = MutableLiveData()
-    val passengerCreatingState: LiveData<Resource<String>> = _passengerCreatingState
+    private val _passengerCreatingState: MutableSharedFlow<Resource<String>> = MutableSharedFlow()
+    val passengerCreatingState: SharedFlow<Resource<String>> = _passengerCreatingState
 
     private var nameJob: Job? = null
+    private var tripsJob: Job? = null
 
     init {
         downloadAirlines()
-
-        nameJob = viewModelScope.launch(Dispatchers.Default) {
-            name.drop(1).onEach {
-                nameValidationResult.emit(TextInputResource.InputInProcess())
-            }.debounce(300).collect {
-                nameValidationResult.emit(validation.validateName(it))
-            }
-        }
-
-        viewModelScope.launch(Dispatchers.Default) {
-            trips.drop(1).onEach {
-                tripsValidationResult.emit(TextInputResource.InputInProcess())
-            }.debounce(300).collect {
-                tripsValidationResult.emit(validation.validateTrips(it))
-            }
-        }
+        jumpToDefaultValues()
     }
 
     fun changeSelectedAirline(position: Int?) {
@@ -82,7 +74,22 @@ class PassengerCreatingViewModel(
             _adapterSelectedAirlinePosition.value = position
             _selectedAirline.emit(selectedAirline)
         }
+    }
 
+    fun createPassenger() {
+        val airlineId = selectedAirline.value?.id!!.toInt()
+        val passenger = PassengerRequest(name.value, trips.value.toDouble(), airlineId)
+        viewModelScope.launch {
+            _passengerCreatingState.emit(Resource.Loading())
+            val result = repository.createPassenger(passenger)
+            if (result is Resource.Success) {
+                _passengerCreatingState.emit(Resource.Success(result.data?.message))
+                jumpToDefaultValues()
+            }
+            if (result is Resource.Error) {
+                _passengerCreatingState.emit(Resource.Error(result.message))
+            }
+        }
     }
 
     fun downloadAirlines() {
@@ -98,25 +105,41 @@ class PassengerCreatingViewModel(
         }
     }
 
-    fun createPassenger() {
-        val airlineId = selectedAirline.value?.id!!.toInt()
-        val passenger = PassengerRequest(name.value,trips.value.toDouble(),airlineId)
+    fun removeAirline() {
         viewModelScope.launch {
-            _passengerCreatingState.postValue(Resource.Loading())
-            delay(2000)
-            val result = repository.createPassenger(passenger)
-            if (result is Resource.Success) {
-                _passengerCreatingState.postValue(Resource.Success(result.data?.message))
-            }
-            if (result is Resource.Error) {
-                _passengerCreatingState.postValue(Resource.Error(result.message))
-            }
+            _airlineRemovingFlow.emit(Unit)
         }
     }
 
     fun toggleExpandedAirlinesListState() {
         viewModelScope.launch {
             _isAirlinesListExpanded.emit(!isAirlinesListExpanded.value)
+        }
+    }
+
+    private fun jumpToDefaultValues() {
+        nameJob?.cancel()
+        tripsJob?.cancel()
+        viewModelScope.launch {
+            name.emit(DEFAULT_NAME)
+            trips.emit(DEFAULT_TRIPS)
+            tripsValidationResult.emit(TextInputResource.InputInProcess())
+            nameValidationResult.emit(TextInputResource.InputInProcess())
+            removeAirline()
+        }
+        nameJob = viewModelScope.launch {
+            name.drop(1).onEach {
+                nameValidationResult.emit(TextInputResource.InputInProcess())
+            }.debounce(DEFAULT_DEBOUNCE_TIME).collect {
+                nameValidationResult.emit(validation.validateName(it))
+            }
+        }
+        tripsJob = viewModelScope.launch(Dispatchers.Default) {
+            trips.drop(1).onEach {
+                tripsValidationResult.emit(TextInputResource.InputInProcess())
+            }.debounce(DEFAULT_DEBOUNCE_TIME).collect {
+                tripsValidationResult.emit(validation.validateTrips(it))
+            }
         }
     }
 
@@ -131,6 +154,7 @@ class PassengerCreatingViewModel(
     }
 
     companion object {
+        private const val DEFAULT_DEBOUNCE_TIME = 300L
         private const val DEFAULT_NAME = ""
         private const val DEFAULT_TRIPS = ""
         private const val DEFAULT_EXPAND = false

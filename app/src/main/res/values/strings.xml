@@ -9,8 +9,10 @@
     <string name="create">Create</string>
     <string name="trips">Trips</string>
     <string name="name">Name</string>
-    <string name="error_name_too_short">Имя должно быть не менее %d символов</string>
-    <string name="error_name_too_long">Имя должно быть не более %d символов</string>
-    <string name="error_empty_input">Поле не должно быть пустым</string>
+    <string name="error_name_too_short">Name must be not less than %d chars</string>
+    <string name="error_name_too_long">Name must be not more than %d chars</string>
+    <string name="error_empty_input">This field must not be empty</string>
     <string name="retry">Retry</string>
+    <string name="passenger_created_successfully">Passenger created successfully</string>
+    <string name="passenger_created_error">Error happened</string>
 </resources>
