@@ -12,4 +12,14 @@ data class Airline(
     @Expose @SerializedName("name") val name: String?,
     @Expose @SerializedName("slogan") val slogan: String?,
     @Expose @SerializedName("website") val website: String?
-)
+) {
+    fun isValid(): Boolean {
+        return !(logo == null || logo.isEmpty() ||
+        country == null || country.isEmpty() ||
+        established == null || established.isEmpty() ||
+        headQuaters == null || headQuaters.isEmpty() ||
+        id == null || id == 0.0 ||
+        slogan == null || slogan.isEmpty() ||
+        website == null || website.isEmpty())
+    }
+}

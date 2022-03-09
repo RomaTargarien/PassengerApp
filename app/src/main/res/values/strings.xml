@@ -12,4 +12,5 @@
     <string name="error_name_too_short">Имя должно быть не менее %d символов</string>
     <string name="error_name_too_long">Имя должно быть не более %d символов</string>
     <string name="error_empty_input">Поле не должно быть пустым</string>
+    <string name="retry">Retry</string>
 </resources>

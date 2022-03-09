@@ -10,17 +10,17 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:alpha="0.65"
+        android:id="@+id/containerAirline"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_margin="10dp"
         android:background="@drawable/shape_rounded_rectangle">
 
         <ImageView
             android:id="@+id/ivAirline"
-            android:layout_width="170dp"
-            android:layout_height="170dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_marginTop="30dp"
-            android:scaleType="centerCrop"
             app:imageUrl="@{airline.logo}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +31,7 @@
             style="@style/TextTitleStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
+            android:textSize="22sp"
             android:text="@{airline.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/ivAirline"

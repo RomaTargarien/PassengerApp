@@ -21,6 +21,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appBarLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:title="@string/app_name"
+                    app:titleTextColor="@color/white"/>
+
+            </com.google.android.material.appbar.AppBarLayout>
+
             <ImageView
                 android:id="@+id/imageView"
                 android:layout_width="match_parent"
@@ -29,7 +44,7 @@
                 android:src="@drawable/airplane" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tvHi"
                 style="@style/TextTitleStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -156,16 +171,98 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:onClick="@{view -> viewModel.toggleExpandedAirlinesListState()}"
                     android:text="@string/choose_airline"
                     android:textColor="#2196F3"
                     android:textSize="22sp"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/containerSelectedAirline"
+                    android:layout_width="0dp"
+                    android:layout_marginTop="4dp"
+                    android:padding="4dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_rounded_rectangle"
+                    android:backgroundTint="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvChooseAirline">
+
+                    <ImageView
+                        android:id="@+id/ivAirlineLogo"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvAirlineTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/ivAirlineLogo"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Airline" />
+
+                    <ImageView
+                        android:id="@+id/ivRemoveAirline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:src="@drawable/ic_baseline_close_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ProgressBar
+                    android:id="@+id/pbAirlinesState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="4dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvChooseAirline"
+                    app:layout_constraintStart_toEndOf="@+id/tvChooseAirline"
+                    app:layout_constraintTop_toTopOf="@+id/tvChooseAirline"/>
+
+                <ImageView
+                    android:id="@+id/ivAirlineState"
+                    android:layout_width="40dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="4dp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvChooseAirline"
+                    app:layout_constraintStart_toEndOf="@+id/tvChooseAirline"
+                    app:layout_constraintTop_toTopOf="@+id/tvChooseAirline"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/bnRetryAirlinesDownload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:background="@drawable/shape_rounded_rectangle"
+                    android:backgroundTint="#03A9F4"
+                    android:text="@string/retry"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    android:onClick="@{view -> viewModel.downloadAirlines()}"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivAirlineState"
+                    app:layout_constraintStart_toEndOf="@+id/ivAirlineState"
+                    app:layout_constraintTop_toTopOf="@+id/ivAirlineState"/>
+
+
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/bnCreatePassenger"
                     android:layout_width="300dp"
+                    android:layout_marginTop="4dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/shape_rounded_rectangle_for_button"
                     android:backgroundTint="@color/black"
@@ -173,18 +270,30 @@
                     android:textColor="@color/white"
                     android:textSize="22sp"
                     app:enableButton="@{viewModel.createPassengerEnabled}"
+                    android:onClick="@{view -> viewModel.createPassenger()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvChooseAirline" />
+                    app:layout_constraintTop_toBottomOf="@+id/containerSelectedAirline" />
+
+                <ProgressBar
+                    android:id="@+id/pbPassengerCreating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:elevation="2dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/bnCreatePassenger"
+                    app:layout_constraintEnd_toEndOf="@+id/bnCreatePassenger"
+                    app:layout_constraintStart_toStartOf="@+id/bnCreatePassenger"
+                    app:layout_constraintTop_toBottomOf="@+id/containerSelectedAirline"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvAirlines"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/containerPassengerCreatingTransparent"/>
 
