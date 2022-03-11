@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_passenger_list" >
         <action
             android:id="@+id/action_passengerListFragment_to_airlineDetailsFragment"
-            app:destination="@id/airlineDetailsFragment" />
+            app:destination="@id/airlineDetailsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"/>
         <action
             android:id="@+id/action_passengerListFragment_to_passengerCreatingFragment"
             app:destination="@id/passengerCreatingFragment" />
@@ -21,10 +25,16 @@
         android:id="@+id/passengerCreatingFragment"
         android:name="com.example.passengerapp.ui.screens.passengercreating.PassengerCreatingFragment"
         android:label="fragment_passenger_creating"
-        tools:layout="@layout/fragment_passenger_creating" />
+        tools:layout="@layout/fragment_passenger_creating"/>
+
     <fragment
         android:id="@+id/airlineDetailsFragment"
         android:name="com.example.passengerapp.ui.screens.airline.AirlineDetailsFragment"
         android:label="fragment_airline_details"
-        tools:layout="@layout/fragment_airline_details" />
+        tools:layout="@layout/fragment_airline_details">
+        <argument
+            android:name="passenger"
+            app:argType="string" />
+    </fragment>
+
 </navigation>

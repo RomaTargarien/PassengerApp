@@ -1,6 +1,7 @@
 package com.example.passengerapp.ui.screens.passengerlist
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.databinding.library.baseAdapters.BR
@@ -14,9 +15,9 @@ import com.example.passengerapp.model.Passenger
 class PassengerAdapter :
     PagingDataAdapter<Passenger, PassengerAdapter.PassengerViewHolder>(PASSENGER_COMPARATOR) {
 
-    private var onDeleteListener: ((Passenger) -> Unit)? = null
-    fun setOnDeleteListener(listener: (Passenger) -> Unit) {
-        onDeleteListener = listener
+    private var onAirlineDetailsClickListener: ((View, Passenger) -> Unit)? = null
+    fun setOnAirlineDetailsClickListener(listener: (View, Passenger) -> Unit) {
+        onAirlineDetailsClickListener = listener
     }
 
     private val mapBinding: MutableMap<Int, ItemPassengerBinding> = mutableMapOf()
@@ -26,6 +27,7 @@ class PassengerAdapter :
     inner class PassengerViewHolder(val binding: ItemPassengerBinding) : ViewHolder(binding.root) {
         fun bind(passenger: Passenger, position: Int) {
             binding.setVariable(BR.passenger, passenger)
+            binding.ivAirline.transitionName = passenger.id
             if (mapBinding[position] != null) {
                 handleExpandedState(true)
             } else {
@@ -38,6 +40,11 @@ class PassengerAdapter :
                 } else {
                     mapBinding.remove(position)
                     handleExpandAirlineDetailsClick(false)
+                }
+            }
+            binding.airLineDetailsContainer.setOnClickListener {
+                onAirlineDetailsClickListener?.let { click ->
+                    click(binding.ivAirline, passenger)
                 }
             }
         }

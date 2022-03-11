@@ -2,12 +2,16 @@ package com.example.passengerapp.ui.screens.passengerlist
 
 import android.graphics.*
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.FragmentNavigator
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -19,8 +23,8 @@ import com.example.passengerapp.databinding.FragmentPassengerListBinding
 import com.example.passengerapp.model.Passenger
 import com.example.youngchemist.ui.custom.snack_bar.CustomSnackBar
 import com.example.youngchemist.ui.custom.snack_bar.CustomSnackBar.Companion.setOnClickListener
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -34,8 +38,11 @@ class PassengerListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View =
-        FragmentPassengerListBinding.inflate(inflater, container, false).also { binding = it }.root
+    ): View {
+        binding = FragmentPassengerListBinding.inflate(inflater, container, false)
+        setUpRecyclerView()
+        return binding.root
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,7 +51,6 @@ class PassengerListFragment : Fragment() {
         binding.viewModel = viewModel
         bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_icon_trash)
         setUpNavigation()
-        setUpRecyclerView()
         collectAdapterData()
         enableSwipe()
     }
@@ -138,18 +144,31 @@ class PassengerListFragment : Fragment() {
 
     private fun setUpRecyclerView() {
         passengersAdapter = PassengerAdapter()
-        val decoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
-        binding.rvPassengers.addItemDecoration(decoration)
-        binding.rvPassengers.adapter = passengersAdapter.withLoadStateHeaderAndFooter(
-            header = PassengerLoadStateAdapter { passengersAdapter.retry() },
-            footer = PassengerLoadStateAdapter { passengersAdapter.retry() }
-        )
-        binding.rvPassengers.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.rvPassengers.run {
+            postponeEnterTransition()
+            viewTreeObserver.addOnPreDrawListener {
+                startPostponedEnterTransition()
+                true
+            }
+            val decoration = DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
+            addItemDecoration(decoration)
+            adapter = passengersAdapter.withLoadStateHeaderAndFooter(
+                header = PassengerLoadStateAdapter { passengersAdapter.retry() },
+                footer = PassengerLoadStateAdapter { passengersAdapter.retry() }
+            )
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
-        passengersAdapter.setOnDeleteListener {
-            viewModel.deletePassengerById(it.id)
-            undoDelete(it)
+        }
+
+        passengersAdapter.setOnAirlineDetailsClickListener { view, passenger ->
+            val airlineGson = Gson().toJson(passenger)
+            val toAirlineDetailsFragment =
+                PassengerListFragmentDirections.actionPassengerListFragmentToAirlineDetailsFragment(
+                    airlineGson
+                )
+            val extraInfoSharedElement = FragmentNavigatorExtras(view to passenger.id)
+            navigate(toAirlineDetailsFragment, extraInfoSharedElement)
         }
 
         binding.swipeToRefresh.setOnRefreshListener {
@@ -168,4 +187,11 @@ class PassengerListFragment : Fragment() {
             .setDuration(3000)
             .show()
     }
+
+    private fun navigate(destination: NavDirections, extraInfo: FragmentNavigator.Extras) =
+        with(findNavController()) {
+            Log.d("TAG", currentDestination.toString())
+            currentDestination?.getAction(destination.actionId)
+                ?.let { navigate(destination, extraInfo) }
+        }
 }
