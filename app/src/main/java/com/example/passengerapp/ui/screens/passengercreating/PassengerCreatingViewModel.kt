@@ -78,7 +78,11 @@ class PassengerCreatingViewModel(
 
     fun createPassenger() {
         val airlineId = selectedAirline.value?.id!!.toInt()
-        val passenger = PassengerRequest(name.value, trips.value.toDouble(), airlineId)
+        val passenger = PassengerRequest(
+            airline = airlineId,
+            name = name.value,
+            trips = trips.value.toDouble()
+        )
         viewModelScope.launch {
             _passengerCreatingState.emit(Resource.Loading())
             val result = repository.createPassenger(passenger)

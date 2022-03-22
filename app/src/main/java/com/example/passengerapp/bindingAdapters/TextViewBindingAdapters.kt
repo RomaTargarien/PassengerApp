@@ -1,6 +1,5 @@
 package com.example.passengerapp.bindingAdapters
 
-import android.util.Log
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.example.passengerapp.ui.util.TextInputResource
@@ -12,7 +11,6 @@ fun TextView.textNumber(number: Number) {
 
 @BindingAdapter("processValidationResult")
 fun TextView.processValidationResult(state: TextInputResource<String>) {
-    Log.d("TAG",state.message ?: "")
     when (state) {
         is TextInputResource.InputInProcess -> {
             animate().alpha(0f).setDuration(300).start()
