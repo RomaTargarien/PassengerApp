@@ -8,6 +8,7 @@ import com.example.passengerapp.repository.PassengerRepositoryImpl
 import com.example.passengerapp.ui.base.TextInputValidator
 import com.example.passengerapp.ui.base.TextInputValidatorImpl
 import com.example.passengerapp.ui.screens.MainActivityViewModel
+import com.example.passengerapp.ui.screens.passengercreating.AirlineListSelectionHelper
 import com.example.passengerapp.ui.screens.passengercreating.PassengerCreatingViewModel
 import com.example.passengerapp.ui.screens.passengerlist.PassengerListViewModel
 import com.google.gson.ExclusionStrategy
@@ -36,12 +37,14 @@ val appModule = module {
 
     factory { OkHttpClientFactory() }
 
+    factory { provideAirlineSelectionHelper() }
+
 
     viewModel { MainActivityViewModel() }
 
     viewModel { PassengerListViewModel(get()) }
 
-    viewModel { PassengerCreatingViewModel(get(), get()) }
+    viewModel { PassengerCreatingViewModel(get(), get(), get()) }
 
 }
 
@@ -61,5 +64,7 @@ fun getGson(): Gson = GsonBuilder().addDeserializationExclusionStrategy(object :
     override fun shouldSkipClass(clazz: Class<*>?): Boolean = false
 
 }).create()
+
+fun provideAirlineSelectionHelper() = AirlineListSelectionHelper()
 
 private const val BASE_URL = "https://api.instantwebtools.net/v1/"

@@ -1,6 +1,5 @@
 package com.example.passengerapp.ui.screens.passengercreating
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,7 +22,8 @@ import java.util.*
 @FlowPreview
 class PassengerCreatingViewModel(
     private val textInputValidator: TextInputValidator,
-    private val repository: PassengerRepository
+    private val repository: PassengerRepository,
+    private val airlineListSelectionHelper: AirlineListSelectionHelper
 ) : ViewModel() {
 
     private val _resultViewAnimationHasBeenHandled: MutableStateFlow<Boolean> =
@@ -42,8 +42,7 @@ class PassengerCreatingViewModel(
     val nameValidationResult =
         MutableStateFlow<TextInputResource<String>>(TextInputResource.InputInProcess())
 
-    private val _selectedAirline: MutableStateFlow<AirlineLayout?> = MutableStateFlow(DEFAULT_VALUE)
-    val selectedAirline: StateFlow<AirlineLayout?> = _selectedAirline
+    val selectedAirline: StateFlow<AirlineLayout?> = airlineListSelectionHelper.selectedAirline
 
     val trips: MutableStateFlow<String> = MutableStateFlow(DEFAULT_TRIPS)
     val tripsValidationResult =
@@ -66,31 +65,16 @@ class PassengerCreatingViewModel(
     }
 
     fun toggleAirlineLayoutSelection(airlineLayout: AirlineLayout) {
-        val statesList = createListSelectionStates(airlineLayout)
-        val oldList = airlinesState.value?.data
-        val newList = mutableListOf<AirlineLayout>().apply {
-            oldList?.let { addAll(it) }
-        }
-        for (state in statesList) {
-            when (state) {
-                is ListSelectionBehavior.Select -> {
-                    val airlineIndex = oldList?.indexOf(state.airlineLayout)
-                    val newItem = state.airlineLayout.copy(selected = true)
-                    newList.removeAt(airlineIndex!!)
-                    newList.add(airlineIndex,newItem)
-                }
-                is ListSelectionBehavior.Unselect -> {
-                    val airlineIndex = oldList?.indexOf(state.airlineLayout)
-                    val newItem = state.airlineLayout.copy(selected = false)
-                    newList.removeAt(airlineIndex!!)
-                    newList.add(airlineIndex,newItem)
-                }
+        airlineListSelectionHelper.toggleAirlineLayoutSelection(
+            airlineLayout,
+            airlinesState.value?.data!!
+        )
+        viewModelScope.launch {
+            airlineListSelectionHelper.newListFlow.collect {
+                _airlinesState.postValue(Resource.Success(it))
             }
         }
-        _airlinesState.postValue(Resource.Success(newList))
     }
-
-
 
     fun toggleResultViewAnimation() {
         _resultViewAnimationHasBeenHandled.value = true
@@ -145,22 +129,6 @@ class PassengerCreatingViewModel(
         }
     }
 
-    private fun createListSelectionStates(airlineLayout: AirlineLayout): List<ListSelectionBehavior> {
-        val states = mutableListOf<ListSelectionBehavior>()
-        if (selectedAirline.value == null) {
-            states.add(ListSelectionBehavior.Select(airlineLayout))
-        }
-        if (airlineLayout == selectedAirline.value) {
-            states.add(ListSelectionBehavior.Unselect(airlineLayout))
-        }
-//        if (selectedAirline.value != null && airlineLayout != selectedAirline.value) {
-//            states.add(ListSelectionBehavior.Select(airlineLayout))
-//            states.add(ListSelectionBehavior.Unselect(selectedAirline.value!!))
-//        }
-       // _selectedAirline.value = if (selectedAirline.value == null) airlineLayout else null
-        return states
-    }
-
     private fun jumpToDefaultValues() {
         nameJob?.cancel()
         tripsJob?.cancel()
@@ -204,10 +172,5 @@ class PassengerCreatingViewModel(
         private const val DEFAULT_PASSENGER_CREATING_ENABLED = false
         private const val DEFAULT_ANIMATION_VALUE = false
         private val DEFAULT_VALUE = null
-    }
-
-    sealed class ListSelectionBehavior(val airlineLayout: AirlineLayout) {
-        class Select(airlineLayout: AirlineLayout): ListSelectionBehavior(airlineLayout)
-        class Unselect(airlineLayout: AirlineLayout): ListSelectionBehavior(airlineLayout)
     }
 }
