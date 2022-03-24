@@ -5,8 +5,8 @@ import com.example.passengerapp.di.clients.OkHttpClientFactory
 import com.example.passengerapp.network.PassengerApi
 import com.example.passengerapp.repository.PassengerRepository
 import com.example.passengerapp.repository.PassengerRepositoryImpl
-import com.example.passengerapp.ui.base.Validation
-import com.example.passengerapp.ui.base.ValidationImpl
+import com.example.passengerapp.ui.base.TextInputValidator
+import com.example.passengerapp.ui.base.TextInputValidatorImpl
 import com.example.passengerapp.ui.screens.MainActivityViewModel
 import com.example.passengerapp.ui.screens.passengercreating.PassengerCreatingViewModel
 import com.example.passengerapp.ui.screens.passengerlist.PassengerListViewModel
@@ -32,7 +32,7 @@ val appModule = module {
 
     single<PassengerRepository> { PassengerRepositoryImpl(get()) }
 
-    single<Validation> { ValidationImpl(context = androidContext()) }
+    single<TextInputValidator> { TextInputValidatorImpl(context = androidContext()) }
 
     factory { OkHttpClientFactory() }
 

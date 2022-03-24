@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.passengerapp.R
 import com.example.passengerapp.ui.util.TextInputResource
 
-class ValidationImpl(val context: Context) : Validation {
+class TextInputValidatorImpl(val context: Context) : TextInputValidator {
 
     override fun validateName(name: String): TextInputResource<String> {
         if (name.length < MIN_NAME_LENGTH) {

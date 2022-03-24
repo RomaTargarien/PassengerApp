@@ -17,11 +17,7 @@ class CustomSnackBarView @JvmOverloads constructor(
         View.inflate(context, R.layout.item_custom_snackbar,this)
     }
 
-    override fun animateContentIn(delay: Int, duration: Int) {
+    override fun animateContentIn(delay: Int, duration: Int) {}
 
-    }
-
-    override fun animateContentOut(delay: Int, duration: Int) {
-
-    }
+    override fun animateContentOut(delay: Int, duration: Int) {}
 }

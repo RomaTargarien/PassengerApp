@@ -212,7 +212,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:onClick="@{view -> viewModel.removeAirline()}"
                         android:src="@drawable/ic_baseline_close_24"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

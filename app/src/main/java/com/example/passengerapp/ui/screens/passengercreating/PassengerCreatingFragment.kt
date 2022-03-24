@@ -11,8 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.passengerapp.R
 import com.example.passengerapp.databinding.FragmentPassengerCreatingBinding
-import com.example.passengerapp.model.Airline
-import com.example.passengerapp.ui.util.Event
+import com.example.passengerapp.model.ui.AirlineLayout
 import com.example.passengerapp.ui.util.Resource
 import com.example.passengerapp.ui.util.snackbar
 import com.squareup.picasso.Picasso
@@ -49,8 +48,8 @@ class PassengerCreatingFragment : Fragment() {
     }
 
     private fun observeAirlinesLoadingState() {
-        viewModel.airlinesState.observe(viewLifecycleOwner) { event ->
-            when (val result = event.data()) {
+        viewModel.airlinesState.observe(viewLifecycleOwner) { result ->
+            when (result) {
                 is Resource.Loading -> {
                     binding.pbAirlinesState.visibility = View.VISIBLE
                     binding.ivAirlineState.visibility = View.GONE
@@ -58,11 +57,13 @@ class PassengerCreatingFragment : Fragment() {
                     binding.tvChooseAirline.isEnabled = false
                 }
                 is Resource.Success -> {
-                    handleAirlineDownloadedResult(event)
-                    result.data?.let { airlineAdapter.submitList(it) }
+                    handleAirlineDownloadedResult(result)
+                    result.data?.let {
+                        airlineAdapter.submitList(it)
+                    }
                 }
                 is Resource.Error -> {
-                    handleAirlineDownloadedResult(event)
+                    handleAirlineDownloadedResult(result)
                 }
             }
         }
@@ -120,11 +121,11 @@ class PassengerCreatingFragment : Fragment() {
         }
     }
 
-    private fun handleAirlineDownloadedResult(event: Event<Resource<List<Airline>>>) {
-        val resultSuccess = event.data() is Resource.Success
+    private fun handleAirlineDownloadedResult(result: Resource<List<AirlineLayout>>) {
+        val resultSuccess = result is Resource.Success
         binding.ivAirlineState.apply {
             setImageResource(if (resultSuccess) R.drawable.ic_icon_success else R.drawable.ic_baseline_replay_24)
-            isVisible = !event.hasBeenHandled
+            isVisible = !viewModel.resultViewAnimationHasBeenHandled.value
             setOnClickListener {
                 if (resultSuccess) return@setOnClickListener
                 else viewModel.downloadAirlines()
@@ -135,28 +136,21 @@ class PassengerCreatingFragment : Fragment() {
             isEnabled = resultSuccess
         }
         binding.pbAirlinesState.visibility = View.GONE
-        if (resultSuccess && !event.hasBeenHandled) {
+        if (resultSuccess && viewModel.resultViewAnimationHasBeenHandled.value) {
             toggleSuccessImageVisibility()
-            event.hasBeenHandled()
+            viewModel.toggleResultViewAnimation()
         }
     }
 
     private fun setUpRecyclerView() {
-        airlineAdapter = AirlineAdapter(viewModel.adapterSelectedAirlinePosition.value)
-        airlineAdapter.setOnChosenAirlineListener { position ->
-            viewModel.changeSelectedAirline(position)
-        }
+        airlineAdapter = AirlineAdapter()
         binding.rvAirlines.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = airlineAdapter
         }
-        lifecycleScope.launch(Dispatchers.Main) {
-            viewModel.airlineRemovingFlow.collect {
-                airlineAdapter.airlineRemovingListener?.let { click ->
-                    viewModel.adapterSelectedAirlinePosition.value?.let(click)
-                }
-            }
+        airlineAdapter.setOnAirlineSelectedListener {
+            viewModel.toggleAirlineLayoutSelection(it)
         }
     }
 

@@ -1,14 +1,15 @@
 package com.example.passengerapp.ui.screens.passengercreating
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.passengerapp.model.Airline
 import com.example.passengerapp.model.request.PassengerRequest
+import com.example.passengerapp.model.ui.AirlineLayout
 import com.example.passengerapp.repository.PassengerRepository
-import com.example.passengerapp.ui.base.Validation
-import com.example.passengerapp.ui.util.Event
+import com.example.passengerapp.ui.base.TextInputValidator
 import com.example.passengerapp.ui.util.Resource
 import com.example.passengerapp.ui.util.TextInputResource
 import com.example.passengerapp.ui.util.toStateFlow
@@ -17,22 +18,21 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.util.*
 
 @FlowPreview
 class PassengerCreatingViewModel(
-    private val validation: Validation,
+    private val textInputValidator: TextInputValidator,
     private val repository: PassengerRepository
 ) : ViewModel() {
 
-    private val _airlineRemovingFlow: MutableSharedFlow<Unit> = MutableSharedFlow()
-    val airlineRemovingFlow: SharedFlow<Unit> = _airlineRemovingFlow
+    private val _resultViewAnimationHasBeenHandled: MutableStateFlow<Boolean> =
+        MutableStateFlow(DEFAULT_ANIMATION_VALUE)
+    val resultViewAnimationHasBeenHandled: StateFlow<Boolean> =
+        _resultViewAnimationHasBeenHandled
 
-    private val _airlinesState: MutableLiveData<Event<Resource<List<Airline>>>> = MutableLiveData()
-    val airlinesState: LiveData<Event<Resource<List<Airline>>>> = _airlinesState
-
-    private val _adapterSelectedAirlinePosition: MutableStateFlow<Int?> =
-        MutableStateFlow(DEFAULT_VALUE)
-    val adapterSelectedAirlinePosition: StateFlow<Int?> = _adapterSelectedAirlinePosition
+    private val _airlinesState: MutableLiveData<Resource<List<AirlineLayout>>> = MutableLiveData()
+    val airlinesState: LiveData<Resource<List<AirlineLayout>>> = _airlinesState
 
     private val _isAirlinesListExpanded: MutableStateFlow<Boolean> =
         MutableStateFlow(DEFAULT_EXPAND)
@@ -42,8 +42,8 @@ class PassengerCreatingViewModel(
     val nameValidationResult =
         MutableStateFlow<TextInputResource<String>>(TextInputResource.InputInProcess())
 
-    private val _selectedAirline: MutableStateFlow<Airline?> = MutableStateFlow(DEFAULT_VALUE)
-    val selectedAirline: StateFlow<Airline?> = _selectedAirline
+    private val _selectedAirline: MutableStateFlow<AirlineLayout?> = MutableStateFlow(DEFAULT_VALUE)
+    val selectedAirline: StateFlow<AirlineLayout?> = _selectedAirline
 
     val trips: MutableStateFlow<String> = MutableStateFlow(DEFAULT_TRIPS)
     val tripsValidationResult =
@@ -65,19 +65,39 @@ class PassengerCreatingViewModel(
         jumpToDefaultValues()
     }
 
-    fun changeSelectedAirline(position: Int?) {
-        var selectedAirline: Airline? = null
-        if (position != null) {
-            selectedAirline = airlinesState.value?.data()?.data?.get(position)
+    fun toggleAirlineLayoutSelection(airlineLayout: AirlineLayout) {
+        val statesList = createListSelectionStates(airlineLayout)
+        val oldList = airlinesState.value?.data
+        val newList = mutableListOf<AirlineLayout>().apply {
+            oldList?.let { addAll(it) }
         }
-        viewModelScope.launch {
-            _adapterSelectedAirlinePosition.value = position
-            _selectedAirline.emit(selectedAirline)
+        for (state in statesList) {
+            when (state) {
+                is ListSelectionBehavior.Select -> {
+                    val airlineIndex = oldList?.indexOf(state.airlineLayout)
+                    val newItem = state.airlineLayout.copy(selected = true)
+                    newList.removeAt(airlineIndex!!)
+                    newList.add(airlineIndex,newItem)
+                }
+                is ListSelectionBehavior.Unselect -> {
+                    val airlineIndex = oldList?.indexOf(state.airlineLayout)
+                    val newItem = state.airlineLayout.copy(selected = false)
+                    newList.removeAt(airlineIndex!!)
+                    newList.add(airlineIndex,newItem)
+                }
+            }
         }
+        _airlinesState.postValue(Resource.Success(newList))
+    }
+
+
+
+    fun toggleResultViewAnimation() {
+        _resultViewAnimationHasBeenHandled.value = true
     }
 
     fun createPassenger() {
-        val airlineId = selectedAirline.value?.id!!.toInt()
+        val airlineId = selectedAirline.value?.id?.toInt() ?: -1
         val passenger = PassengerRequest(
             airline = airlineId,
             name = name.value,
@@ -98,20 +118,24 @@ class PassengerCreatingViewModel(
 
     fun downloadAirlines() {
         viewModelScope.launch {
-            _airlinesState.postValue(Event(Resource.Loading()))
+            _airlinesState.postValue(Resource.Loading())
             val result = repository.getAllAirlines()
             if (result is Resource.Success && result.data != null) {
-                _airlinesState.postValue(Event(Resource.Success(filterValidAirlines(result.data))))
+                filterValidAirlines(result.data).map {
+                    AirlineLayout(
+                        id = it.id,
+                        logo = it.logo,
+                        name = it.name,
+                        slogan = it.slogan,
+                        uniqueID = UUID.randomUUID().toString()
+                    )
+                }.also {
+                    _airlinesState.postValue(Resource.Success(it))
+                }
             }
             if (result is Resource.Error) {
-                _airlinesState.postValue(Event(Resource.Error(result.message)))
+                _airlinesState.postValue(Resource.Error(result.message))
             }
-        }
-    }
-
-    fun removeAirline() {
-        viewModelScope.launch {
-            _airlineRemovingFlow.emit(Unit)
         }
     }
 
@@ -119,6 +143,22 @@ class PassengerCreatingViewModel(
         viewModelScope.launch {
             _isAirlinesListExpanded.emit(!isAirlinesListExpanded.value)
         }
+    }
+
+    private fun createListSelectionStates(airlineLayout: AirlineLayout): List<ListSelectionBehavior> {
+        val states = mutableListOf<ListSelectionBehavior>()
+        if (selectedAirline.value == null) {
+            states.add(ListSelectionBehavior.Select(airlineLayout))
+        }
+        if (airlineLayout == selectedAirline.value) {
+            states.add(ListSelectionBehavior.Unselect(airlineLayout))
+        }
+//        if (selectedAirline.value != null && airlineLayout != selectedAirline.value) {
+//            states.add(ListSelectionBehavior.Select(airlineLayout))
+//            states.add(ListSelectionBehavior.Unselect(selectedAirline.value!!))
+//        }
+       // _selectedAirline.value = if (selectedAirline.value == null) airlineLayout else null
+        return states
     }
 
     private fun jumpToDefaultValues() {
@@ -129,21 +169,20 @@ class PassengerCreatingViewModel(
             trips.emit(DEFAULT_TRIPS)
             tripsValidationResult.emit(TextInputResource.InputInProcess())
             nameValidationResult.emit(TextInputResource.InputInProcess())
-            removeAirline()
         }
         nameJob = viewModelScope.launch {
-            name.drop(1).onEach {
-                nameValidationResult.emit(TextInputResource.InputInProcess())
-            }.debounce(DEFAULT_DEBOUNCE_TIME).collect {
-                nameValidationResult.emit(validation.validateName(it))
-            }
+            name.drop(1)
+                .onEach { nameValidationResult.emit(TextInputResource.InputInProcess()) }
+                .debounce(DEFAULT_DEBOUNCE_TIME).collect {
+                    nameValidationResult.emit(textInputValidator.validateName(it))
+                }
         }
         tripsJob = viewModelScope.launch(Dispatchers.Default) {
-            trips.drop(1).onEach {
-                tripsValidationResult.emit(TextInputResource.InputInProcess())
-            }.debounce(DEFAULT_DEBOUNCE_TIME).collect {
-                tripsValidationResult.emit(validation.validateTrips(it))
-            }
+            trips.drop(1)
+                .onEach { tripsValidationResult.emit(TextInputResource.InputInProcess()) }
+                .debounce(DEFAULT_DEBOUNCE_TIME).collect {
+                    tripsValidationResult.emit(textInputValidator.validateTrips(it))
+                }
         }
     }
 
@@ -163,6 +202,12 @@ class PassengerCreatingViewModel(
         private const val DEFAULT_TRIPS = ""
         private const val DEFAULT_EXPAND = false
         private const val DEFAULT_PASSENGER_CREATING_ENABLED = false
+        private const val DEFAULT_ANIMATION_VALUE = false
         private val DEFAULT_VALUE = null
+    }
+
+    sealed class ListSelectionBehavior(val airlineLayout: AirlineLayout) {
+        class Select(airlineLayout: AirlineLayout): ListSelectionBehavior(airlineLayout)
+        class Unselect(airlineLayout: AirlineLayout): ListSelectionBehavior(airlineLayout)
     }
 }

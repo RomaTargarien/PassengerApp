@@ -6,7 +6,7 @@
     <data>
         <variable
             name="airline"
-            type="com.example.passengerapp.model.Airline" />
+            type="com.example.passengerapp.model.ui.AirlineLayout" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

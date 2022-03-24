@@ -1,106 +1,53 @@
 package com.example.passengerapp.ui.screens.passengercreating
 
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.passengerapp.BR
-import com.example.passengerapp.R
 import com.example.passengerapp.databinding.ItemAirlineBinding
-import com.example.passengerapp.model.Airline
+import com.example.passengerapp.model.ui.AirlineLayout
 
-class AirlineAdapter(lastSelectedPosition: Int? = null) :
-    ListAdapter<Airline, RecyclerView.ViewHolder>(AirlineDiffCallback()) {
+class AirlineAdapter : ListAdapter<AirlineLayout, RecyclerView.ViewHolder>(AirlineDiffCalBack()) {
 
-    var airlineRemovingListener: ((Int) -> Unit)? = null
 
-    private var airlineChosenListener: ((Int?) -> Unit)? = null
-    fun setOnChosenAirlineListener(listener: (Int?) -> Unit) {
-        airlineChosenListener = listener
-    }
+    private var onAirlineSelectedListener: ((AirlineLayout) -> Unit)? = null
 
-    private val mapBinding: MutableMap<Int, ItemAirlineBinding> = mutableMapOf()
-    private var previousPosition: Int?
-
-    init {
-        previousPosition = lastSelectedPosition
+    fun setOnAirlineSelectedListener(listener: ((AirlineLayout) -> Unit)) {
+        onAirlineSelectedListener = listener
     }
 
     inner class AirlineViewHolder(val binding: ItemAirlineBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        private lateinit var item: AirlineLayout
+
         init {
-            setOnAirlineRemovingListener { toggleState(it) }
-        }
-
-        fun bind(airline: Airline, position: Int) {
-            binding.setVariable(BR.airline, airline)
-            if (previousPosition != null && previousPosition == position) {
-                mapBinding[position] = binding
-            }
-            toggleBackgroundColor(binding, mapBinding[position] != null)
             binding.containerAirline.setOnClickListener {
-                toggleState(position)
+                onAirlineSelectedListener?.invoke(item)
             }
         }
 
-        private fun setOnAirlineRemovingListener(listener: (Int) -> Unit) {
-            airlineRemovingListener = listener
-        }
-
-        private fun toggleState(position: Int) {
-            val stateList = generateListStates(position)
-            for (state in stateList) {
-                when (state) {
-                    AirlineItemState.SELECTED -> {
-                        toggleBackgroundColor(binding, true)
-                        mapBinding[position] = binding
-                        previousPosition = position
-                        airlineChosenListener?.let { click ->
-                            click(position)
-                        }
-                    }
-                    AirlineItemState.PREVIOUS_POSITION_SELECTED -> {
-                        toggleBackgroundColor(mapBinding[previousPosition], false)
-                        mapBinding.remove(previousPosition)
-                    }
-                    AirlineItemState.UNSELECTED -> {
-                        toggleBackgroundColor(mapBinding[position], false)
-                        mapBinding.remove(position)
-                        airlineChosenListener?.let { click ->
-                            click(null)
-                        }
-                        previousPosition = null
-                    }
-                }
+        fun onBind(airlineLayout: AirlineLayout) {
+            this.item = airlineLayout
+            binding.setVariable(BR.airline, airlineLayout)
+            if (airlineLayout.selected) {
+                binding.containerAirline.setBackgroundColor(Color.GRAY)
+            } else {
+                binding.containerAirline.setBackgroundColor(Color.WHITE)
             }
         }
 
-        private fun generateListStates(position: Int): List<AirlineItemState> {
-            val statesList = mutableListOf<AirlineItemState>()
-            if (mapBinding[position] == null && previousPosition != null) {
-                statesList.add(AirlineItemState.PREVIOUS_POSITION_SELECTED)
-            }
-            if (mapBinding[position] == null) {
-                statesList.add(AirlineItemState.SELECTED)
-            }
-            if (mapBinding[position] != null) {
-                statesList.add(AirlineItemState.UNSELECTED)
-            }
-            return statesList
-        }
-
-        private fun toggleBackgroundColor(binding: ItemAirlineBinding?, selected: Boolean) {
-            binding?.containerAirline?.backgroundTintList =
-                ContextCompat.getColorStateList(
-                    itemView.context,
-                    if (selected) R.color.purple_200 else R.color.grey
-                )
+        fun onBind(airlineLayout: AirlineLayout, payloads: List<Any>) {
+            this.item = airlineLayout
+            val isSelected = payloads.last() as Boolean
+            binding.containerAirline.setBackgroundColor(if (isSelected) Color.GRAY else Color.WHITE)
         }
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val binding = ItemAirlineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -108,19 +55,31 @@ class AirlineAdapter(lastSelectedPosition: Int? = null) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as AirlineViewHolder).bind(getItem(position), position)
+        (holder as AirlineViewHolder).onBind(currentList[position])
     }
 
-    class AirlineDiffCallback : DiffUtil.ItemCallback<Airline>() {
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isEmpty()) {
+            super.onBindViewHolder(holder, position, payloads)
+        } else {
+            (holder as AirlineViewHolder).onBind(currentList[position], payloads)
+        }
+    }
 
-        override fun areItemsTheSame(oldItem: Airline, newItem: Airline): Boolean =
-            oldItem.id == newItem.id
+    private class AirlineDiffCalBack : DiffUtil.ItemCallback<AirlineLayout>() {
+        override fun areItemsTheSame(oldItem: AirlineLayout, newItem: AirlineLayout) =
+            oldItem.uniqueID == newItem.uniqueID
 
-        override fun areContentsTheSame(oldItem: Airline, newItem: Airline): Boolean =
+        override fun areContentsTheSame(oldItem: AirlineLayout, newItem: AirlineLayout) =
             oldItem == newItem
-    }
 
-    enum class AirlineItemState {
-        SELECTED, UNSELECTED, PREVIOUS_POSITION_SELECTED
+        override fun getChangePayload(oldItem: AirlineLayout, newItem: AirlineLayout): Any? {
+            if (oldItem.selected != newItem.selected) return newItem.selected
+            return super.getChangePayload(oldItem, newItem)
+        }
     }
 }

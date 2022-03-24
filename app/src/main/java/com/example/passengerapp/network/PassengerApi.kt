@@ -16,10 +16,10 @@ interface PassengerApi {
     ): PassengersPage
 
     @DELETE("passenger/{id}")
-    suspend fun deletePassenger(@Path("id") passengerId: String): Response<PassengerResponse>
+    suspend fun deletePassenger(@Path("id") passengerId: String): PassengerResponse
 
     @POST("passenger")
-    suspend fun createPassenger(@Body requestBody: PassengerRequest): Response<PassengerResponse>
+    suspend fun createPassenger(@Body requestBody: PassengerRequest): PassengerResponse
 
     @GET("airlines")
     suspend fun getAirlines(): List<Airline>

@@ -15,4 +15,5 @@
     <string name="retry">Retry</string>
     <string name="passenger_created_successfully">Passenger created successfully</string>
     <string name="passenger_created_error">Error happened</string>
+    <string name="cancel">Cancel</string>
 </resources>

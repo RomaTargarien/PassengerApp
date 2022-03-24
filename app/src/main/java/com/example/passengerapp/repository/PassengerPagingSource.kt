@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.passengerapp.model.Passenger
 import com.example.passengerapp.network.PassengerApi
+import com.example.passengerapp.ui.util.Constants.NETWORK_PAGE_SIZE
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -42,6 +43,5 @@ class PassengerPagingSource(
 
     companion object {
         private const val STARTING_PAGE_INDEX = 0
-        private const val NETWORK_PAGE_SIZE = 20
     }
 }
