@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.example.passengerapp.BR
 import com.example.passengerapp.databinding.ItemAirlineBinding
 import com.example.passengerapp.model.ui.AirlineLayout
@@ -26,7 +27,7 @@ class AirlineAdapter : ListAdapter<AirlineLayout, RecyclerView.ViewHolder>(Airli
         private lateinit var item: AirlineLayout
 
         init {
-            binding.containerAirline.setOnClickListener {
+            binding.bnChoose.setOnClickListener {
                 onAirlineSelectedListener?.invoke(item)
             }
         }
@@ -34,17 +35,12 @@ class AirlineAdapter : ListAdapter<AirlineLayout, RecyclerView.ViewHolder>(Airli
         fun onBind(airlineLayout: AirlineLayout) {
             this.item = airlineLayout
             binding.setVariable(BR.airline, airlineLayout)
-            if (airlineLayout.selected) {
-                binding.containerAirline.setBackgroundColor(Color.GRAY)
-            } else {
-                binding.containerAirline.setBackgroundColor(Color.WHITE)
-            }
         }
 
         fun onBind(airlineLayout: AirlineLayout, payloads: List<Any>) {
             this.item = airlineLayout
             val isSelected = payloads.last() as Boolean
-            binding.containerAirline.setBackgroundColor(if (isSelected) Color.GRAY else Color.WHITE)
+            binding.bnChoose.text = if (isSelected) "Deselect" else "Choose"
         }
     }
 

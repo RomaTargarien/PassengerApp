@@ -18,267 +18,149 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mainContainer"
+            android:background="@color/dark_violet"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.appbar.AppBarLayout
-                android:id="@+id/appBarLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:title="@string/app_name"
-                    app:titleTextColor="@color/white"/>
-
-            </com.google.android.material.appbar.AppBarLayout>
-
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/airplane" />
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/margin_regular_doubled"
+                android:src="@drawable/ic_icon_airline"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineRight"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tvHi"
-                style="@style/TextTitleStyle"
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/create_your_passenger"
+                android:textColor="@color/white"
+                android:textSize="44sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintEnd_toStartOf="@id/imageView"
+                app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
+                app:layout_constraintTop_toTopOf="@+id/imageView" />
+
+            <TextView
+                android:id="@+id/tvErrorNameInput"
+                style="@style/TextErrorStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_regular_half"
-                android:layout_marginBottom="@dimen/margin_regular_half"
-                android:text="@string/hi"
-                android:textSize="50sp"
-                app:layout_constraintBottom_toTopOf="@+id/containerPassengerCreating"
-                app:layout_constraintStart_toStartOf="@+id/guidelineLeft" />
+                android:layout_marginStart="@dimen/margin_regular_one_quarter"
+                app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
+                app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
+                app:processValidationResult="@{viewModel.nameValidationResult}"
+                tools:text="Error" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/containerPassengerCreatingTransparent"
+                android:id="@+id/constraintLayout2"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:alpha="0.65"
-                android:background="@drawable/shape_rounded_rectangle"
-                app:layout_constraintBottom_toBottomOf="@+id/guidelineBottom"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineRight"
+                android:layout_height="60dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/shape_rounded_rectangle_for_button"
+                app:layout_constraintEnd_toStartOf="@+id/imageView"
                 app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
-                app:layout_constraintTop_toTopOf="@+id/guidelineTop">
+                app:layout_constraintTop_toBottomOf="@+id/textView">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/containerPassengerCreating"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:padding="@dimen/margin_regular"
-                app:layout_constraintBottom_toBottomOf="@+id/guidelineBottom"
-                app:layout_constraintEnd_toStartOf="@+id/guidelineRight"
-                app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
-                app:layout_constraintTop_toTopOf="@+id/guidelineTop">
-
-                <TextView
-                    android:id="@+id/textView2"
-                    style="@style/TextTitleStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/create_your_passenger"
-                    android:textSize="26sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvErrorNameInput"
-                    style="@style/TextErrorStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0"
-                    app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
-                    app:layout_constraintStart_toStartOf="@+id/constraintLayout2"
-                    app:processValidationResult="@{viewModel.nameValidationResult}" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout2"
+                <EditText
                     android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="@dimen/margin_regular_doubled"
-                    android:background="@drawable/shape_rounded_rectangle_for_button"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2">
-
-                    <EditText
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:hint="@string/name"
-                        android:paddingStart="@dimen/margin_regular_half"
-                        android:paddingEnd="@dimen/margin_regular_half"
-                        android:text="@={viewModel.name}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/tvErrorTripsInput"
-                    style="@style/TextErrorStyle"
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:alpha="0"
-                    app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
-                    app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
-                    app:processValidationResult="@{viewModel.tripsValidationResult}" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout3"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_marginTop="@dimen/margin_regular_doubled"
-                    android:background="@drawable/shape_rounded_rectangle_for_button"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
-
-                    <EditText
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:background="@null"
-                        android:hint="@string/trips"
-                        android:inputType="number"
-                        android:paddingStart="@dimen/margin_regular_half"
-                        android:paddingEnd="@dimen/margin_regular_half"
-                        android:text="@={viewModel.trips}"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/tvChooseAirline"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_regular"
-                    android:onClick="@{view -> viewModel.toggleExpandedAirlinesListState()}"
-                    android:text="@string/choose_airline"
-                    android:textColor="#2196F3"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/containerSelectedAirline"
-                    android:layout_width="0dp"
-                    android:layout_marginTop="@dimen/margin_regular_one_quarter"
-                    android:padding="@dimen/margin_regular_one_quarter"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_rounded_rectangle"
-                    android:backgroundTint="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvChooseAirline">
-
-                    <ImageView
-                        android:id="@+id/ivAirlineLogo"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="@dimen/margin_regular_half"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tvAirlineTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_regular_half"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/ivAirlineLogo"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Airline" />
-
-                    <ImageView
-                        android:id="@+id/ivRemoveAirline"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="10dp"
-                        android:src="@drawable/ic_baseline_close_24"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <ProgressBar
-                    android:id="@+id/pbAirlinesState"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="@dimen/margin_regular_one_quarter"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvChooseAirline"
-                    app:layout_constraintStart_toEndOf="@+id/tvChooseAirline"
-                    app:layout_constraintTop_toTopOf="@+id/tvChooseAirline"/>
-
-                <ImageView
-                    android:id="@+id/ivAirlineState"
-                    android:layout_width="40dp"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="@dimen/margin_regular_one_quarter"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvChooseAirline"
-                    app:layout_constraintStart_toEndOf="@+id/tvChooseAirline"
-                    app:layout_constraintTop_toTopOf="@+id/tvChooseAirline" />
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/bnCreatePassenger"
-                    android:layout_width="match_parent"
-                    android:layout_marginStart="@dimen/margin_regular_doubled"
-                    android:layout_marginTop="@dimen/margin_regular_one_quarter"
-                    android:layout_marginEnd="@dimen/margin_regular_doubled"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/shape_rounded_rectangle_for_button"
-                    android:backgroundTint="@color/black"
-                    android:text="@string/create"
+                    android:background="@null"
+                    android:hint="@string/name"
+                    android:paddingStart="@dimen/margin_regular_half"
+                    android:paddingEnd="@dimen/margin_regular_half"
+                    android:text="@={viewModel.name}"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    app:enableButton="@{viewModel.createPassengerEnabled}"
-                    android:onClick="@{view -> viewModel.createPassenger()}"
+                    android:textColorHint="@color/white"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/containerSelectedAirline" />
-
-                <ProgressBar
-                    android:id="@+id/pbPassengerCreating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="2dp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@+id/bnCreatePassenger"
-                    app:layout_constraintEnd_toEndOf="@+id/bnCreatePassenger"
-                    app:layout_constraintStart_toStartOf="@+id/bnCreatePassenger"
-                    app:layout_constraintTop_toTopOf="@+id/bnCreatePassenger" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvAirlines"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvErrorTripsInput"
+                style="@style/TextErrorStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/containerPassengerCreatingTransparent"/>
+                android:layout_marginStart="@dimen/margin_regular_one_quarter"
+                app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
+                app:layout_constraintStart_toStartOf="@+id/constraintLayout3"
+                app:processValidationResult="@{viewModel.tripsValidationResult}"
+                tools:text="Error" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout3"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/shape_rounded_rectangle_for_button"
+                app:layout_constraintEnd_toStartOf="@+id/imageView"
+                app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
+
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="@string/trips"
+                    android:inputType="number"
+                    android:paddingStart="@dimen/margin_regular_half"
+                    android:paddingEnd="@dimen/margin_regular_half"
+                    android:text="@={viewModel.trips}"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/bnCreatePassenger"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/shape_rounded_rectangle_for_button"
+                android:backgroundTint="@color/pink"
+                android:onClick="@{view -> viewModel.createPassenger()}"
+                android:text="@string/create"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                app:enableButton="@{viewModel.createPassengerEnabled}"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineRight"
+                app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/containerSelectedAirline"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/shape_rounded_rectangle"
+                android:backgroundTint="@color/white"
+                android:padding="@dimen/margin_regular_one_quarter"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayout3"
+                app:layout_constraintEnd_toStartOf="@+id/guidelineRight"
+                app:layout_constraintStart_toEndOf="@+id/constraintLayout2"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayout2">
+
+                <ImageView
+                    android:id="@+id/ivAirlineLogo"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guidelineLeft"
@@ -294,22 +176,35 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.95" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guidelineTop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.3" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guidelineBottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.85" />
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <include
+                android:id="@+id/bm_sheet_airlines_list"
+                layout="@layout/bottom_sheet_airline_list"
+                app:text="@{2}" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabShowBottomSheetContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:backgroundTint="@color/pink"
+                android:onClick="@{view -> viewModel.toggleBottomSheetExpandedState()}"
+                android:src="@drawable/ic_icon_fab_airplane"
+                app:borderWidth="0dp"
+                app:tint="@color/white"
+                app:layout_anchor="@id/bm_sheet_airlines_list"
+                app:layout_anchorGravity="top|end" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     </FrameLayout>
 </layout>
