@@ -35,6 +35,7 @@ class AirlineAdapter : ListAdapter<AirlineLayout, RecyclerView.ViewHolder>(Airli
         fun onBind(airlineLayout: AirlineLayout) {
             this.item = airlineLayout
             binding.setVariable(BR.airline, airlineLayout)
+            binding.bnChoose.text = if (airlineLayout.selected) "Deselect" else "Choose"
         }
 
         fun onBind(airlineLayout: AirlineLayout, payloads: List<Any>) {

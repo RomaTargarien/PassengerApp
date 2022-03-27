@@ -1,5 +1,6 @@
 package com.example.passengerapp.ui.screens.passengercreating
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,19 +26,12 @@ class PassengerCreatingViewModel(
     private val repository: PassengerRepository
 ) : ViewModel() {
 
-    private val _resultViewAnimationHasBeenHandled: MutableStateFlow<Boolean> =
-        MutableStateFlow(DEFAULT_ANIMATION_VALUE)
-    val resultViewAnimationHasBeenHandled: StateFlow<Boolean> =
-        _resultViewAnimationHasBeenHandled
-
     private val _airlinesState: MutableLiveData<Resource<List<AirlineLayout>>> = MutableLiveData()
     val airlinesState: LiveData<Resource<List<AirlineLayout>>> = _airlinesState
 
     private val _isBottomSheetExpanded: MutableStateFlow<Boolean> =
         MutableStateFlow(DEFAULT_EXPAND)
     val isBottomSheetExpanded: StateFlow<Boolean> = _isBottomSheetExpanded
-
-    private val copiedList: MutableLiveData<List<AirlineLayout>> = MutableLiveData()
 
     val name: MutableStateFlow<String> = MutableStateFlow(DEFAULT_NAME)
     val nameValidationResult =
@@ -52,7 +46,6 @@ class PassengerCreatingViewModel(
 
     val airlineName: MutableStateFlow<String> = MutableStateFlow(DEFAULT_NAME)
 
-
     val createPassengerEnabled =
         combine(nameValidationResult, tripsValidationResult, selectedAirline) { _ ->
             processProgress()
@@ -61,7 +54,8 @@ class PassengerCreatingViewModel(
     private val _passengerCreatingState: MutableSharedFlow<Resource<String>> = MutableSharedFlow()
     val passengerCreatingState: SharedFlow<Resource<String>> = _passengerCreatingState
 
-    private val airline: MutableSharedFlow<AirlineLayout> = MutableSharedFlow()
+    private val copiedList: MutableStateFlow<MutableList<AirlineLayout>> =
+        MutableStateFlow(mutableListOf())
 
     private var nameJob: Job? = null
     private var tripsJob: Job? = null
@@ -98,16 +92,6 @@ class PassengerCreatingViewModel(
         }
     }
 
-    fun clearSelectedAirline() {
-        selectedAirline.value?.let {
-            toggleAirlineLayoutSelection(it)
-        }
-    }
-
-    fun toggleResultViewAnimation() {
-        _resultViewAnimationHasBeenHandled.value = true
-    }
-
     fun createPassenger() {
         val airlineId = selectedAirline.value?.id?.toInt() ?: -1
         val passenger = PassengerRequest(
@@ -128,7 +112,7 @@ class PassengerCreatingViewModel(
         }
     }
 
-    fun downloadAirlines() {
+    private fun downloadAirlines() {
         viewModelScope.launch {
             _airlinesState.postValue(Resource.Loading())
             val result = repository.getAllAirlines()
@@ -143,7 +127,7 @@ class PassengerCreatingViewModel(
                     )
                 }.also {
                     _airlinesState.postValue(Resource.Success(it))
-                    copiedList.postValue(it)
+                    copiedList.value = it.toMutableList()
                 }
             }
             if (result is Resource.Error) {
@@ -165,8 +149,13 @@ class PassengerCreatingViewModel(
     ): AirlineLayout? {
         val airlineIndex = newList.indexOf(item)
         val newItem = item.copy(selected = isSelected)
-        newList.removeAt(airlineIndex)
-        newList.add(airlineIndex, newItem)
+        if (airlineIndex != -1) {
+            newList.removeAt(airlineIndex)
+            newList.add(airlineIndex, newItem)
+        }
+        val copiedAirlineIndex = copiedList.value.indexOf(item)
+        copiedList.value.removeAt(copiedAirlineIndex)
+        copiedList.value.add(copiedAirlineIndex,newItem)
         return if (isSelected) newItem else null
     }
 
@@ -203,13 +192,10 @@ class PassengerCreatingViewModel(
                 .debounce(DEFAULT_DEBOUNCE_TIME)
                 .drop(1)
                 .collect { name ->
-                    val list = copiedList.value
-                    list.let {
-                        it?.filter {
-                            it.name?.startsWith(name)!!
-                        }.also {
-                            _airlinesState.postValue(Resource.Success(it))
-                        }
+                    copiedList.value.filter {
+                        it.name!!.startsWith(name)
+                    }.also {
+                        _airlinesState.postValue(Resource.Success(it))
                     }
                 }
         }
@@ -231,7 +217,6 @@ class PassengerCreatingViewModel(
         private const val DEFAULT_TRIPS = ""
         private const val DEFAULT_EXPAND = false
         private const val DEFAULT_PASSENGER_CREATING_ENABLED = false
-        private const val DEFAULT_ANIMATION_VALUE = false
         private val DEFAULT_VALUE = null
     }
 }

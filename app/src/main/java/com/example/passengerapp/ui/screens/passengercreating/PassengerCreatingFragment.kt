@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.passengerapp.databinding.BottomSheetAirlineListBinding
 import com.example.passengerapp.databinding.FragmentPassengerCreatingBinding
+import com.example.passengerapp.ui.screens.GoBackAppBarBehavior
 import com.example.passengerapp.ui.util.Resource
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.FlowPreview
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @FlowPreview
-class PassengerCreatingFragment : Fragment() {
+class PassengerCreatingFragment : Fragment(),GoBackAppBarBehavior {
 
     val viewModel: PassengerCreatingViewModel by viewModel()
     private lateinit var binding: FragmentPassengerCreatingBinding
