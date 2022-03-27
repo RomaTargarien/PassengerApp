@@ -102,4 +102,8 @@ dependencies {
 
     //CircularProgressBar
     implementation 'com.mikhaellopez:circularprogressbar:3.1.0'
+
+
+    //KeyBoard visibility event
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC1'
 }

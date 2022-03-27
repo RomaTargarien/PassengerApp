@@ -17,13 +17,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.passengerapp.R
 import com.example.passengerapp.databinding.FragmentPassengerListBinding
 import com.example.passengerapp.model.Passenger
+import com.example.passengerapp.ui.screens.CustomAction
+import com.example.passengerapp.ui.screens.HasCustomAction
 import com.example.youngchemist.ui.custom.snack_bar.CustomSnackBar
 import com.example.youngchemist.ui.custom.snack_bar.CustomSnackBar.Companion.setOnClickListener
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PassengerListFragment : Fragment() {
+class PassengerListFragment : Fragment(), HasCustomAction {
 
     private lateinit var binding: FragmentPassengerListBinding
     private lateinit var passengersAdapter: PassengerAdapter
@@ -130,9 +132,9 @@ class PassengerListFragment : Fragment() {
     }
 
     private fun setUpNavigation() {
-        binding.ivAddPassenger.setOnClickListener {
-            findNavController().navigate(R.id.action_passengerListFragment_to_passengerCreatingFragment)
-        }
+//        binding.ivAddPassenger.setOnClickListener {
+//            findNavController().navigate(R.id.action_passengerListFragment_to_passengerCreatingFragment)
+//        }
     }
 
     private fun setUpRecyclerView() {
@@ -166,5 +168,11 @@ class PassengerListFragment : Fragment() {
             .setAnchorView(binding.snackbarAnchor)
             .setDuration(3000)
             .show()
+    }
+
+    override fun getCustomAction(): CustomAction = CustomAction(
+        R.drawable.ic_baseline_add_24
+    ) {
+        findNavController().navigate(R.id.action_passengerListFragment_to_passengerCreatingFragment)
     }
 }

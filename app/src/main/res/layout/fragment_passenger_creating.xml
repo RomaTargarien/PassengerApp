@@ -24,8 +24,8 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
                 android:layout_marginTop="@dimen/margin_regular_doubled"
                 android:src="@drawable/ic_icon_airline"
                 app:layout_constraintEnd_toStartOf="@+id/guidelineRight"
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/create_your_passenger"
                 android:textColor="@color/white"
-                android:textSize="44sp"
+                android:textSize="36sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView"
                 app:layout_constraintEnd_toStartOf="@id/imageView"
@@ -59,7 +59,7 @@
                 android:id="@+id/constraintLayout2"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/shape_rounded_rectangle_for_button"
                 app:layout_constraintEnd_toStartOf="@+id/imageView"
                 app:layout_constraintStart_toStartOf="@+id/guidelineLeft"
@@ -203,6 +203,20 @@
                 app:tint="@color/white"
                 app:layout_anchor="@id/bm_sheet_airlines_list"
                 app:layout_anchorGravity="top|end" />
+
+            <TextView
+                android:id="@+id/tvResultSize"
+                android:layout_width="80dp"
+                android:alpha="0"
+                android:layout_height="80dp"
+                android:paddingBottom="50dp"
+                android:textAlignment="center"
+                android:paddingTop="5dp"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_anchor="@id/fabShowBottomSheetContainer"
+                app:layout_anchorGravity="center_horizontal|top"
+                tools:text="22"/>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
