@@ -2,95 +2,101 @@ package com.example.passengerapp.ui.screens.passengerlist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.children
 import androidx.databinding.library.baseAdapters.BR
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.passengerapp.R
 import com.example.passengerapp.databinding.ItemPassengerBinding
-import com.example.passengerapp.model.Passenger
+import com.example.passengerapp.model.ui.PassengerLayout
+import com.example.passengerapp.ui.util.extensions.rotate
+import com.example.passengerapp.ui.util.extensions.scale
+import com.example.passengerapp.ui.util.extensions.setHeight
 
-class PassengerAdapter :
-    PagingDataAdapter<Passenger, PassengerAdapter.PassengerViewHolder>(PASSENGER_COMPARATOR) {
+class PassengerLayoutAdapter :
+    PagingDataAdapter<PassengerLayout, PassengerLayoutAdapter.PassengerLayoutViewHolder>(
+        PASSENGER_LAYOUT_COMPARATOR
+    ) {
 
-    private var onDeleteListener: ((Passenger) -> Unit)? = null
-    fun setOnDeleteListener(listener: (Passenger) -> Unit) {
-        onDeleteListener = listener
+    private var onExpandedClickListener: ((Pair<PassengerLayout, Int>) -> Unit)? = null
+
+    fun getPassengerLayout(position: Int) = getItem(position)
+
+    fun setOnExpandedClickListener(listener: (Pair<PassengerLayout, Int>) -> Unit) {
+        onExpandedClickListener = listener
     }
 
-    private val mapBinding: MutableMap<Int, ItemPassengerBinding> = mutableMapOf()
+    inner class PassengerLayoutViewHolder(val binding: ItemPassengerBinding) : ViewHolder(binding.root) {
 
-    fun getPassenger(position: Int) = getItem(position)
+        private var containerHeight: Int =
+            itemView.resources.getDimension(R.dimen.passenger_container_height).toInt()
 
-    inner class PassengerViewHolder(val binding: ItemPassengerBinding) : ViewHolder(binding.root) {
-        fun bind(passenger: Passenger, position: Int) {
-            binding.setVariable(BR.passenger, passenger)
-            if (mapBinding[position] != null) {
-                handleExpandedState(true)
-            } else {
-                handleExpandedState(false)
-            }
+        private lateinit var passengerLayout: PassengerLayout
+        private var passengerLayoutPosition = -1
+
+        fun bind(passengerLayout: PassengerLayout, position: Int) {
+            this.passengerLayout = passengerLayout
+            this.passengerLayoutPosition = absoluteAdapterPosition
+            binding.setVariable(BR.passenger, passengerLayout)
+            val height = if (passengerLayout.selected) containerHeight else containerHeight / 2
+            binding.passengerContainer.setHeight(height)
             binding.ivExpandAirlines.setOnClickListener {
-                if (mapBinding[position] == null) {
-                    mapBinding[position] = binding
-                    handleExpandAirlineDetailsClick(true)
-                } else {
-                    mapBinding.remove(position)
-                    handleExpandAirlineDetailsClick(false)
-                }
+                onExpandedClickListener?.invoke(Pair(passengerLayout, passengerLayoutPosition))
             }
         }
 
-        private fun handleExpandedState(isExpanded: Boolean) {
-            binding.ivExpandAirlines.rotation = if (isExpanded) 180f else 360f
-            binding.airLineDetailsContainer.children.forEach {
-                it.alpha = if (isExpanded) 1f else 0f
-            }
-            binding.constraintLayout
-                .transitionToState(if (isExpanded) R.id.end else R.id.start)
-        }
-
-        private fun handleExpandAirlineDetailsClick(isExpanded: Boolean) {
-            val alpha = if (isExpanded) 1f else 0f
-            binding.ivExpandAirlines
-                .animate()
-                .rotation(if (isExpanded) 180f else 360f)
-                .setDuration(ANIMATION_TIME)
-                .start()
-            binding.airLineDetailsContainer.children.forEach {
-                it.animate()
-                    .alpha(alpha)
-                    .setDuration(ANIMATION_TIME)
-                    .start()
-            }
-            binding.constraintLayout
-                .transitionToState(if (isExpanded) R.id.end else R.id.start)
+        fun onBind(passengerLayout: PassengerLayout, payloads: List<Any>) {
+            this.passengerLayout = passengerLayout
+            this.passengerLayoutPosition = bindingAdapterPosition
+            val isSelected = payloads.last() as Boolean
+            val from = if (isSelected) containerHeight / 2 else containerHeight
+            val to = if (isSelected) containerHeight else containerHeight / 2
+            binding.ivExpandAirlines.rotate(if (isSelected) 180f else 360f, ANIMATION_TIME)
+            binding.passengerContainer.scale(from, to, ANIMATION_TIME)
         }
     }
 
 
-    override fun onBindViewHolder(holder: PassengerViewHolder, position: Int) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PassengerLayoutViewHolder {
+        val binding =
+            ItemPassengerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PassengerLayoutViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: PassengerLayoutViewHolder, position: Int) {
         getItem(position)?.let { holder.bind(it, position) }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PassengerViewHolder {
-        val binding =
-            ItemPassengerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PassengerViewHolder(binding)
+    override fun onBindViewHolder(
+        holder: PassengerLayoutViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isEmpty()) {
+            onBindViewHolder(holder, position)
+        } else {
+            holder.onBind(getItem(position)!!, payloads)
+        }
     }
 
     companion object {
         private const val ANIMATION_TIME = 200L
 
-        private val PASSENGER_COMPARATOR = object : DiffUtil.ItemCallback<Passenger>() {
-            override fun areItemsTheSame(oldItem: Passenger, newItem: Passenger): Boolean {
-                return oldItem.id == newItem.id && oldItem.name == newItem.name && newItem.trips == oldItem.trips
-            }
+        private val PASSENGER_LAYOUT_COMPARATOR =
+            object : DiffUtil.ItemCallback<PassengerLayout>() {
+                override fun areItemsTheSame(
+                    oldItem: PassengerLayout,
+                    newItem: PassengerLayout
+                ): Boolean {
+                    return oldItem.id == newItem.id && oldItem.name == newItem.name && newItem.trips == oldItem.trips
+                }
 
-            override fun areContentsTheSame(oldItem: Passenger, newItem: Passenger): Boolean {
-                return oldItem.id == newItem.id
+                override fun areContentsTheSame(
+                    oldItem: PassengerLayout,
+                    newItem: PassengerLayout
+                ): Boolean {
+                    return oldItem.id == newItem.id
+                }
             }
-        }
     }
 }

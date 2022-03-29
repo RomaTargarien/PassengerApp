@@ -5,4 +5,5 @@
     <dimen name="margin_regular_three_quarters">12dp</dimen>
     <dimen name="margin_regular_half">8dp</dimen>
     <dimen name="margin_regular_one_quarter">4dp</dimen>
+    <dimen name="passenger_container_height">100dp</dimen>
 </resources>

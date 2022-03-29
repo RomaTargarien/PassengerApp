@@ -1,20 +1,23 @@
 package com.example.passengerapp.ui.screens.passengercreating
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.passengerapp.databinding.BottomSheetAirlineListBinding
 import com.example.passengerapp.databinding.FragmentPassengerCreatingBinding
-import com.example.passengerapp.ui.screens.GoBackAppBarBehavior
-import com.example.passengerapp.ui.util.Resource
-import com.example.passengerapp.ui.util.animateMarginEnd
-import com.example.passengerapp.ui.util.rotate
-import com.example.passengerapp.ui.util.setUpKeyBoardEventListener
+import com.example.passengerapp.ui.screens.contract.GoBackAppBarBehavior
+import com.example.passengerapp.ui.util.*
+import com.example.passengerapp.ui.util.extensions.animateMarginEnd
+import com.example.passengerapp.ui.util.extensions.rotate
+import com.example.passengerapp.ui.util.extensions.setUpKeyBoardEventListener
+import com.example.passengerapp.ui.util.extensions.snackbar
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.launch
@@ -22,22 +25,23 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 @FlowPreview
-class PassengerCreatingFragment : Fragment(),GoBackAppBarBehavior {
+@RequiresApi(Build.VERSION_CODES.M)
+class PassengerCreatingFragment : Fragment(), GoBackAppBarBehavior {
 
-    val viewModel: PassengerCreatingViewModel by viewModel()
+    private lateinit var airlineAdapter: AirlineAdapter
     private lateinit var binding: FragmentPassengerCreatingBinding
+    private lateinit var bottomSheetAirlineBinding: BottomSheetAirlineListBinding
     private val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
 
         override fun onStateChanged(bottomSheet: View, newState: Int) {}
 
         override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            binding.fabShowBottomSheetContainer.rotate(((1 - slideOffset) * 180))
+            binding.fabShowBottomSheetContainer.rotate(((slideOffset) * 180))
             binding.bnCreatePassenger.animateMarginEnd((slideOffset * binding.imageView.width))
             binding.tvResultSize.alpha = slideOffset
         }
     }
-    private lateinit var bottomSheetAirlineBinding: BottomSheetAirlineListBinding
-    private lateinit var airlineAdapter: AirlineAdapter
+    val viewModel: PassengerCreatingViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,9 +62,26 @@ class PassengerCreatingFragment : Fragment(),GoBackAppBarBehavior {
         initializeBottomSheet()
         setUpRecyclerView()
         observeAirlinesLoadingState()
+        observePassengerCreatingState()
+        observePassengerCreatingStateSnackbar()
         setUpKeyBoardEventListener { isOpen ->
             if (isOpen && !viewModel.isBottomSheetExpanded.value) {
                 viewModel.toggleBottomSheetExpandedState()
+            }
+        }
+    }
+
+    private fun initializeBottomSheet() {
+        val bottomSheetContainer = bottomSheetAirlineBinding.bottomSheetContainer
+        val bottomSheetContainerBehavior = BottomSheetBehavior.from(bottomSheetContainer)
+        bottomSheetContainerBehavior.addBottomSheetCallback(bottomSheetCallback)
+        lifecycleScope.launch {
+            viewModel.isBottomSheetExpanded.collect { expanded ->
+                if (expanded) {
+                    bottomSheetContainerBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                } else {
+                    bottomSheetContainerBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                }
             }
         }
     }
@@ -85,17 +106,28 @@ class PassengerCreatingFragment : Fragment(),GoBackAppBarBehavior {
         }
     }
 
-    private fun initializeBottomSheet() {
-        val bottomSheetContainer = bottomSheetAirlineBinding.bottomSheetContainer
-        val bottomSheetContainerBehavior = BottomSheetBehavior.from(bottomSheetContainer)
-        bottomSheetContainerBehavior.addBottomSheetCallback(bottomSheetCallback)
+    private fun observePassengerCreatingState() {
         lifecycleScope.launch {
-            viewModel.isBottomSheetExpanded.collect { expanded ->
-                if (expanded) {
-                    bottomSheetContainerBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                } else {
-                    bottomSheetContainerBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            viewModel.passengerCreatingState.collect {
+                when (it) {
+                    is Resource.Loading -> {
+                        binding.pbCreatePassenger.isVisible = true
+                    }
+                    is Resource.Success -> {
+                        binding.pbCreatePassenger.isVisible = false
+                    }
+                    is Resource.Error -> {
+                        binding.pbCreatePassenger.isVisible = false
+                    }
                 }
+            }
+        }
+    }
+
+    private fun observePassengerCreatingStateSnackbar() {
+        lifecycleScope.launch {
+            viewModel.snackBarFlow.collect { message ->
+                snackbar(message)
             }
         }
     }

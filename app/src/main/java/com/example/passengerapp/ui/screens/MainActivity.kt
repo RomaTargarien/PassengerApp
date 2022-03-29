@@ -14,6 +14,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
 import com.example.passengerapp.R
 import com.example.passengerapp.databinding.ActivityMainBinding
+import com.example.passengerapp.ui.screens.contract.CustomAction
+import com.example.passengerapp.ui.screens.contract.GoBackAppBarBehavior
+import com.example.passengerapp.ui.screens.contract.HasCustomAction
 
 
 class MainActivity : AppCompatActivity() {

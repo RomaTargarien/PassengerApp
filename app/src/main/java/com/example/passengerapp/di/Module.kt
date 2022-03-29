@@ -1,6 +1,7 @@
 package com.example.passengerapp
 
 import android.content.Context
+import android.content.res.Resources
 import com.example.passengerapp.di.clients.OkHttpClientFactory
 import com.example.passengerapp.network.PassengerApi
 import com.example.passengerapp.repository.PassengerRepository
@@ -36,12 +37,13 @@ val appModule = module {
 
     factory { OkHttpClientFactory() }
 
-
     viewModel { MainActivityViewModel() }
 
     viewModel { PassengerListViewModel(get()) }
 
-    viewModel { PassengerCreatingViewModel(get(), get()) }
+    viewModel { PassengerCreatingViewModel(get(), get(), get()) }
+
+    single { provideResources(androidContext()) }
 
 }
 
@@ -62,5 +64,6 @@ fun getGson(): Gson = GsonBuilder().addDeserializationExclusionStrategy(object :
 
 }).create()
 
+fun provideResources(context: Context): Resources = context.resources
 
 private const val BASE_URL = "https://api.instantwebtools.net/v1/"

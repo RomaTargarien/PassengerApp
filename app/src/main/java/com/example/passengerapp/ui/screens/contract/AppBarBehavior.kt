@@ -1,4 +1,4 @@
-package com.example.passengerapp.ui.screens
+package com.example.passengerapp.ui.screens.contract
 
 import android.support.annotation.DrawableRes
 

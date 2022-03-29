@@ -17,5 +17,6 @@
     <string name="passenger_created_error">Error happened</string>
     <string name="cancel">Cancel</string>
     <string name="choose">Choose</string>
+    <string name="deselect">Deselect</string>
     <string name="find_your_airline">Find your airline</string>
 </resources>

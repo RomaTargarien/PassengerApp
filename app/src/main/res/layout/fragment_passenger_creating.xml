@@ -191,6 +191,16 @@
                 layout="@layout/bottom_sheet_airline_list"
                 app:text="@{2}" />
 
+            <ProgressBar
+                android:id="@+id/pbCreatePassenger"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:elevation="7dp"
+                android:visibility="gone"
+                android:indeterminateTint="@color/white"
+                app:layout_anchor="@id/fabShowBottomSheetContainer"
+                app:layout_anchorGravity="center_horizontal|center_vertical"/>
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabShowBottomSheetContainer"
                 android:layout_width="wrap_content"
@@ -217,6 +227,7 @@
                 app:layout_anchor="@id/fabShowBottomSheetContainer"
                 app:layout_anchorGravity="center_horizontal|top"
                 tools:text="22"/>
+
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

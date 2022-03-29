@@ -16,8 +16,8 @@ class OkHttpClientFactory {
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .addInterceptor(getLoggingInterceptor())
-            .addNetworkInterceptor(getNetworkInterceptor())
-            .cache(cache)
+//            .addNetworkInterceptor(getNetworkInterceptor())
+//            .cache(cache)
             .build()
     }
 
