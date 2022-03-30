@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.passengerapp.databinding.BottomSheetAirlineListBinding
 import com.example.passengerapp.databinding.FragmentPassengerCreatingBinding
 import com.example.passengerapp.ui.screens.contract.GoBackAppBarBehavior
-import com.example.passengerapp.ui.util.*
+import com.example.passengerapp.ui.util.Resource
 import com.example.passengerapp.ui.util.extensions.animateMarginEnd
 import com.example.passengerapp.ui.util.extensions.rotate
 import com.example.passengerapp.ui.util.extensions.setUpKeyBoardEventListener
@@ -28,9 +28,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 @RequiresApi(Build.VERSION_CODES.M)
 class PassengerCreatingFragment : Fragment(), GoBackAppBarBehavior {
 
-    private lateinit var airlineAdapter: AirlineAdapter
-    private lateinit var binding: FragmentPassengerCreatingBinding
-    private lateinit var bottomSheetAirlineBinding: BottomSheetAirlineListBinding
+    val viewModel: PassengerCreatingViewModel by viewModel()
+
+    private val binding: FragmentPassengerCreatingBinding
+        get() = _binding!!
     private val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
 
         override fun onStateChanged(bottomSheet: View, newState: Int) {}
@@ -41,7 +42,11 @@ class PassengerCreatingFragment : Fragment(), GoBackAppBarBehavior {
             binding.tvResultSize.alpha = slideOffset
         }
     }
-    val viewModel: PassengerCreatingViewModel by viewModel()
+
+    private var _binding: FragmentPassengerCreatingBinding? = null
+
+    private lateinit var airlineAdapter: AirlineAdapter
+    private lateinit var bottomSheetAirlineBinding: BottomSheetAirlineListBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +54,7 @@ class PassengerCreatingFragment : Fragment(), GoBackAppBarBehavior {
     ): View =
         FragmentPassengerCreatingBinding.inflate(inflater, container, false)
             .also {
-                binding = it
+                _binding = it
                 bottomSheetAirlineBinding = binding.bmSheetAirlinesList
             }.root
 
@@ -69,6 +74,11 @@ class PassengerCreatingFragment : Fragment(), GoBackAppBarBehavior {
                 viewModel.toggleBottomSheetExpandedState()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun initializeBottomSheet() {

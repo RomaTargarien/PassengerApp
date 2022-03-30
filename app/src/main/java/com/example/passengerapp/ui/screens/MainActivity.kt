@@ -16,7 +16,7 @@ import com.example.passengerapp.R
 import com.example.passengerapp.databinding.ActivityMainBinding
 import com.example.passengerapp.ui.screens.contract.CustomAction
 import com.example.passengerapp.ui.screens.contract.GoBackAppBarBehavior
-import com.example.passengerapp.ui.screens.contract.HasCustomAction
+import com.example.passengerapp.ui.screens.contract.CustomActionFragment
 
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private lateinit var navHostFragment: NavHostFragment
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,14 +74,14 @@ class MainActivity : AppCompatActivity() {
         menuItem.icon = iconDrawable
         menuItem.setOnMenuItemClickListener {
             action.onCustomAction.invoke()
-            return@setOnMenuItemClickListener true
+            true
         }
     }
 
     private fun updateUI() {
         currentFragment?.let { fragment ->
             supportActionBar?.setDisplayHomeAsUpEnabled(fragment is GoBackAppBarBehavior)
-            if (fragment is HasCustomAction) {
+            if (fragment is CustomActionFragment) {
                 createCustomToolbarAction(fragment.getCustomAction())
             } else {
                 binding.toolbar.menu.clear()

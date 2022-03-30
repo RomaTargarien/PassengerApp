@@ -1,6 +1,9 @@
 package com.example.passengerapp.ui.screens.passengerlist
 
-import android.graphics.*
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,30 +16,35 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.passengerapp.R
 import com.example.passengerapp.databinding.FragmentPassengerListBinding
 import com.example.passengerapp.model.ui.PassengerLayout
 import com.example.passengerapp.ui.screens.contract.CustomAction
-import com.example.passengerapp.ui.screens.contract.HasCustomAction
+import com.example.passengerapp.ui.screens.contract.CustomActionFragment
+import com.example.passengerapp.ui.screens.passengerlist.list.PassengerLoadStateAdapter
 import com.example.passengerapp.ui.util.extensions.createItemTouchHelper
 import com.example.youngchemist.ui.custom.snack_bar.CustomSnackBar
 import com.example.youngchemist.ui.custom.snack_bar.CustomSnackBar.Companion.setOnClickListener
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PassengerListFragment : Fragment(), HasCustomAction {
+@ExperimentalCoroutinesApi
+class PassengerListFragment : Fragment(), CustomActionFragment {
 
     val viewModel: PassengerListViewModel by viewModel()
-    private lateinit var binding: FragmentPassengerListBinding
+    private val binding: FragmentPassengerListBinding
+        get() = _binding!!
+
+    private var _binding: FragmentPassengerListBinding? = null
     private lateinit var passengersAdapter: PassengerLayoutAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View =
-        FragmentPassengerListBinding.inflate(inflater, container, false).also { binding = it }.root
+        FragmentPassengerListBinding.inflate(inflater, container, false).also { _binding = it }.root
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,7 +63,7 @@ class PassengerListFragment : Fragment(), HasCustomAction {
 
     private fun collectAdapterData() {
         lifecycleScope.launch {
-            viewModel.pagingDataLayout.collectLatest {
+            viewModel.pagingData.collectLatest {
                 passengersAdapter.submitData(it)
             }
         }
@@ -91,9 +99,9 @@ class PassengerListFragment : Fragment(), HasCustomAction {
             val simpleItemTouchHelper = createItemTouchHelper(
                 swipeDirection = ItemTouchHelper.LEFT,
                 onSwipedAction = { position ->
-                    passengersAdapter.getPassengerLayout(position)?.let {
-                        undoDelete(it)
-                        viewModel.deletePassengerById(it.id)
+                    passengersAdapter.peek(position)?.let {
+                        undoDelete(it.passengerLayout)
+                        viewModel.deletePassengerById(it.passenger.id)
                     }
                 },
                 onChildDrawAction = { canvas, viewHolder,dX,iconDest ->
@@ -106,10 +114,6 @@ class PassengerListFragment : Fragment(), HasCustomAction {
         binding.swipeToRefresh.setOnRefreshListener {
             passengersAdapter.refresh()
             binding.swipeToRefresh.isRefreshing = true
-        }
-        passengersAdapter.setOnExpandedClickListener {
-            it.first.toggleSelection()
-            passengersAdapter.notifyItemChanged(it.second, it.first.selected)
         }
     }
 

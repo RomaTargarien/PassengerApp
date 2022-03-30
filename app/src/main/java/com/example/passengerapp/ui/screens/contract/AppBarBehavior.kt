@@ -4,9 +4,9 @@ import android.support.annotation.DrawableRes
 
 interface GoBackAppBarBehavior
 
-interface HasCustomAction {
-    fun getCustomAction(): CustomAction
 
+interface CustomActionFragment {
+    fun getCustomAction(): CustomAction
 }
 
 class CustomAction(
