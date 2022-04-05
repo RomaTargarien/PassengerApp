@@ -3,4 +3,20 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="addpassenger">addPassenger</string>
+    <string name="hi">Hi!</string>
+    <string name="create_your_passenger">Create your passenger</string>
+    <string name="choose_airline">Choose airline</string>
+    <string name="create">Create</string>
+    <string name="trips">Trips</string>
+    <string name="name">Name</string>
+    <string name="error_name_too_short">Name must be not less than %d chars</string>
+    <string name="error_name_too_long">Name must be not more than %d chars</string>
+    <string name="error_empty_input">This field must not be empty</string>
+    <string name="retry">Retry</string>
+    <string name="passenger_created_successfully">Passenger created successfully</string>
+    <string name="passenger_created_error">Error happened</string>
+    <string name="cancel">Cancel</string>
+    <string name="choose">Choose</string>
+    <string name="deselect">Deselect</string>
+    <string name="find_your_airline">Find your airline</string>
 </resources>

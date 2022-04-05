@@ -1,0 +1,38 @@
+ext {
+
+    // Android Extensions
+    activityKtxVersion = '1.4.0'
+    fragmentKtxVersion = '1.4.1'
+
+    // Lifecycle
+    lifecycleExtensions = '2.2.0'
+    lifecycleKtxExtensions = '2.4.1'
+
+    // Firebase
+    firebaseCoroutines = '1.6.0'
+
+    // Coroutines
+    coroutinesVersion = '1.6.0'
+
+    // Retrofit
+    retrofitVersion = '2.9.0'
+    okhttpLoggingVersion = '4.9.0'
+
+    // Navigation
+    navigationVersion = '2.4.1'
+
+    // Pagination
+    pagingVersion = '3.1.1'
+
+    // Koin
+    koinVersion = '3.1.5'
+
+    // Picasso
+    picassoVersion = '2.71828'
+
+    //UI
+    progressBarVersion = '3.1.0'
+    keyBoardVisibiltyEventVersion = '3.0.0-RC1'
+
+
+}

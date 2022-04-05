@@ -1,9 +1,9 @@
 package com.example.passengerapp.network
 
+import com.example.passengerapp.model.Airline
 import com.example.passengerapp.model.PassengersPage
 import com.example.passengerapp.model.request.PassengerRequest
 import com.example.passengerapp.model.response.PassengerResponse
-import retrofit2.Response
 import retrofit2.http.*
 
 interface PassengerApi {
@@ -15,8 +15,12 @@ interface PassengerApi {
     ): PassengersPage
 
     @DELETE("passenger/{id}")
-    suspend fun deletePassenger(@Path("id") passengerId: String): Response<PassengerResponse>
+    suspend fun deletePassenger(@Path("id") passengerId: String): PassengerResponse
 
     @POST("passenger")
-    suspend fun createPassenger(@Body requestBody: PassengerRequest): Response<PassengerResponse>
+    suspend fun createPassenger(@Body requestBody: PassengerRequest): PassengerResponse
+
+    @Headers("Cache-Control: max-age=640000")
+    @GET("airlines")
+    suspend fun getAirlines(): List<Airline>
 }

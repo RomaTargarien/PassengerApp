@@ -6,99 +6,91 @@
     <data>
         <variable
             name="passenger"
-            type="com.example.passengerapp.model.Passenger" />
+            type="com.example.passengerapp.model.ui.PassengerLayout" />
     </data>
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
-        android:id="@+id/constraintLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/passengerContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layoutDescription="@xml/item_passenger_xml_constraintlayout_scene">
+        android:layout_height="@dimen/passenger_container_height">
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="@{passenger.name}"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Roma" />
+
+        <TextView
+            android:id="@+id/tvTrips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textNumber="@{passenger.trips}"
+            tools:text="210" />
+
+        <ImageView
+            android:id="@+id/ivExpandAirlines"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_baseline_expand_more_24"
+            app:layout_constraintBottom_toBottomOf="@+id/ivAirline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ivAirline" />
+
+        <ImageView
+            android:id="@+id/ivAirline"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:imageUrl="@{passenger.airline.logo}"
+            app:layout_constraintEnd_toStartOf="@+id/ivExpandAirlines"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/passenerContainer"
+            android:id="@+id/airLineDetailsContainer"
             android:layout_width="match_parent"
-            android:layout_height="50dp">
-
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:text="@{passenger.name}"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Roma" />
-
-            <TextView
-                android:id="@+id/tvTrips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:textNumber="@{passenger.trips}"
-                tools:text="210" />
+            android:layout_height="50dp"
+            android:layout_marginTop="50dp"
+            android:background="#EFEFEF"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/ivExpandAirlines"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/ic_baseline_expand_more_24"
-                app:layout_constraintBottom_toBottomOf="@+id/ivAirline"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ivAirline" />
-
-            <ImageView
-                android:id="@+id/ivAirline"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:id="@+id/ivPlane"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                app:imageUrl="@{passenger.airline.get(0).logo}"
-                app:layout_constraintEnd_toStartOf="@+id/ivExpandAirlines"
+                android:layout_marginBottom="10dp"
+                android:alpha="1"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/ic_baseline_airplanemode_active_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/airLineDetailsContainer"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvAirlineTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:background="#EFEFEF"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/ivPlane"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:alpha="1"
-                    android:layout_marginStart="20dp"
-                    android:src="@drawable/ic_baseline_airplanemode_active_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tvAirlineTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:alpha="0"
-                    android:layout_marginStart="10dp"
-                    android:text="@{passenger.airline.get(0).name}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ivPlane"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Quatar" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                android:alpha="0"
+                android:layout_marginStart="10dp"
+                android:text="@{passenger.airline.name}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/ivPlane"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Quatar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.motion.widget.MotionLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

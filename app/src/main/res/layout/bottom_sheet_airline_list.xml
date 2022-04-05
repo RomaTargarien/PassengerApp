@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="text"
+            type="int" />
+
+        <variable
+            name="viewModel"
+            type="com.example.passengerapp.ui.screens.passengercreating.PassengerCreatingViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomSheetContainer"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        app:behavior_hideable="false"
+        android:background="@drawable/bottom_sheet_shape"
+        app:behavior_peekHeight="60dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <EditText
+            android:id="@+id/ed_search_airline"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="60dp"
+            android:background="@null"
+            android:hint="@string/find_your_airline"
+            android:text="@={viewModel.airlineName}"
+            android:textSize="22sp"
+            android:textColor="@color/dark_violet"
+            android:textColorHint="@color/dark_violet"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#B8B8B8"
+            app:layout_constraintTop_toBottomOf="@+id/ed_search_airline" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_airlines"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/ed_search_airline" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/pink"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ed_search_airline" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

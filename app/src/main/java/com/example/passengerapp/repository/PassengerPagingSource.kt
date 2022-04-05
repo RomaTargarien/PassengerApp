@@ -8,6 +8,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 class PassengerPagingSource(
+    private val netWorkPageSize: Int,
     private val passengerApi: PassengerApi
 ): PagingSource<Int,Passenger>() {
 
@@ -21,7 +22,7 @@ class PassengerPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Passenger> {
         val position = params.key ?: STARTING_PAGE_INDEX
         return try {
-            val response = passengerApi.getPageEndPoint(position, NETWORK_PAGE_SIZE)
+            val response = passengerApi.getPageEndPoint(position, netWorkPageSize)
             val passengers = response.data
             val nextKey = if (passengers.isEmpty()) {
                 null
@@ -42,6 +43,5 @@ class PassengerPagingSource(
 
     companion object {
         private const val STARTING_PAGE_INDEX = 0
-        private const val NETWORK_PAGE_SIZE = 20
     }
 }

@@ -1,4 +1,4 @@
-package com.example.passengerapp.ui.screens.passengerlist
+package com.example.passengerapp.ui.screens.passengerlist.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
