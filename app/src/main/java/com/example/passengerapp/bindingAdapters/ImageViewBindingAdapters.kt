@@ -9,5 +9,4 @@ fun ImageView.loadImage(url: String?) {
     url?.let {
         Picasso.get().load(it).into(this)
     }
-
 }

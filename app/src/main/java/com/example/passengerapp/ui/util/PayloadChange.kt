@@ -1,14 +1,14 @@
 package com.example.passengerapp.ui.util
 
-data class Change<out T>(
+data class PayloadChange<out T>(
     val oldData: T,
     val newData: T
 )
 
-fun <T> createCombinedPayload(payloads: List<Change<T>>): Change<T> {
+fun <T> createCombinedPayload(payloads: List<PayloadChange<T>>): PayloadChange<T> {
     assert(payloads.isNotEmpty())
     val firstChange = payloads.first()
     val lastChange = payloads.last()
 
-    return Change(firstChange.oldData, lastChange.newData)
+    return PayloadChange(firstChange.oldData, lastChange.newData)
 }

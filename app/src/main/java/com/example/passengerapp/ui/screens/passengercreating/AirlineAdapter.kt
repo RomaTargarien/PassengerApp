@@ -15,7 +15,8 @@ import com.example.passengerapp.model.ui.AirlineLayout
 import com.example.passengerapp.ui.util.extensions.animateColorTransition
 
 @RequiresApi(Build.VERSION_CODES.M)
-class AirlineAdapter : ListAdapter<AirlineLayout, RecyclerView.ViewHolder>(AirlineDiffCalBack()) {
+class AirlineAdapter :
+    ListAdapter<AirlineLayout, AirlineAdapter.AirlineViewHolder>(AirlineDiffCalBack()) {
 
     private var onAirlineSelectedListener: ((AirlineLayout) -> Unit)? = null
 
@@ -23,24 +24,24 @@ class AirlineAdapter : ListAdapter<AirlineLayout, RecyclerView.ViewHolder>(Airli
         onAirlineSelectedListener = listener
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AirlineViewHolder {
         val binding = ItemAirlineBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return AirlineViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as AirlineViewHolder).onBind(currentList[position])
+    override fun onBindViewHolder(holder: AirlineViewHolder, position: Int) {
+        holder.onBind(currentList[position])
     }
 
     override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
+        holder: AirlineViewHolder,
         position: Int,
         payloads: MutableList<Any>
     ) {
         if (payloads.isEmpty()) {
             onBindViewHolder(holder, position)
         } else {
-            (holder as AirlineViewHolder).onBind(currentList[position], payloads)
+            holder.onBind(currentList[position], payloads)
         }
     }
 

@@ -4,11 +4,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.passengerapp.model.Passenger
 import com.example.passengerapp.network.PassengerApi
-import com.example.passengerapp.ui.util.Constants.NETWORK_PAGE_SIZE
 import retrofit2.HttpException
 import java.io.IOException
 
 class PassengerPagingSource(
+    private val netWorkPageSize: Int,
     private val passengerApi: PassengerApi
 ): PagingSource<Int,Passenger>() {
 
@@ -22,7 +22,7 @@ class PassengerPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Passenger> {
         val position = params.key ?: STARTING_PAGE_INDEX
         return try {
-            val response = passengerApi.getPageEndPoint(position, NETWORK_PAGE_SIZE)
+            val response = passengerApi.getPageEndPoint(position, netWorkPageSize)
             val passengers = response.data
             val nextKey = if (passengers.isEmpty()) {
                 null

@@ -27,13 +27,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 @JvmField
 val appModule = module {
 
-    single { provideRetrofitInstance(context = androidContext(), okHttpClientFactory = get()) }
+    single { provideRetrofitInstance(context = get(), okHttpClientFactory = get()) }
 
     single { provideNetworkApi(get()) }
 
     single<PassengerRepository> { PassengerRepositoryImpl(get()) }
 
-    single<TextInputValidator> { TextInputValidatorImpl(context = androidContext()) }
+    single<TextInputValidator> { TextInputValidatorImpl(context = get()) }
 
     factory { OkHttpClientFactory() }
 
@@ -43,7 +43,7 @@ val appModule = module {
 
     viewModel { PassengerCreatingViewModel(get(), get(), get()) }
 
-    single { provideResources(androidContext()) }
+    single { provideResources(get()) }
 
 }
 

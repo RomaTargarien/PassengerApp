@@ -1,5 +1,6 @@
 package com.example.passengerapp.ui.util.extensions
 
+import android.animation.Animator
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
 import android.view.View
@@ -40,7 +41,7 @@ fun View.rotate(degree: Float, duration: Long = 0) {
     animate().rotation(degree).setDuration(duration).start()
 }
 
-fun View.scale(from: Int, to: Int, duration: Long) {
+fun View.scale(from: Int, to: Int, duration: Long,onAnimationEnd: () -> Unit) {
     val anim = ValueAnimator.ofInt(from, to)
     anim.addUpdateListener { valueAnimator ->
         val newHeight = valueAnimator.animatedValue as Int
@@ -48,6 +49,14 @@ fun View.scale(from: Int, to: Int, duration: Long) {
         newLayoutParams.height = newHeight
         layoutParams = newLayoutParams
     }
+    anim.addListener(object : Animator.AnimatorListener {
+        override fun onAnimationStart(p0: Animator?) {}
+        override fun onAnimationEnd(p0: Animator?) {
+            onAnimationEnd.invoke()
+        }
+        override fun onAnimationCancel(p0: Animator?) {}
+        override fun onAnimationRepeat(p0: Animator?) {}
+    })
     anim.duration = duration
     anim.start()
 }

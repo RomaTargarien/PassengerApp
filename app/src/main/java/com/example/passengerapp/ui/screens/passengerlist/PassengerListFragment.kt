@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.passengerapp.R
 import com.example.passengerapp.databinding.FragmentPassengerListBinding
+import com.example.passengerapp.model.Passenger
 import com.example.passengerapp.model.ui.PassengerLayout
 import com.example.passengerapp.ui.screens.contract.CustomAction
 import com.example.passengerapp.ui.screens.contract.CustomActionFragment
@@ -46,13 +47,13 @@ class PassengerListFragment : Fragment(), CustomActionFragment {
     ): View =
         FragmentPassengerListBinding.inflate(inflater, container, false).also { _binding = it }.root
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
         setUpRecyclerView()
         collectAdapterData()
+        observeUndoDeletePassenger()
     }
 
     override fun getCustomAction(): CustomAction = CustomAction(
@@ -87,6 +88,21 @@ class PassengerListFragment : Fragment(), CustomActionFragment {
         canvas.drawBitmap(bitmap, null, rectF, paint)
     }
 
+    private fun observeUndoDeletePassenger() {
+        lifecycleScope.launch {
+            viewModel.undoDeleteFlow.collect { passenger ->
+                CustomSnackBar.make(activity?.window?.decorView?.rootView as ViewGroup, passenger.name)
+                    .setOnClickListener {
+                        viewModel.undoDelete(passenger)
+                        it.dismiss()
+                    }
+                    .setAnchorView(binding.snackbarAnchor)
+                    .setDuration(3000)
+                    .show()
+            }
+        }
+    }
+
     private fun setUpRecyclerView() {
         passengersAdapter = PassengerLayoutAdapter()
         binding.rvPassengers.apply {
@@ -100,8 +116,7 @@ class PassengerListFragment : Fragment(), CustomActionFragment {
                 swipeDirection = ItemTouchHelper.LEFT,
                 onSwipedAction = { position ->
                     passengersAdapter.peek(position)?.let {
-                        undoDelete(it.passengerLayout)
-                        viewModel.deletePassengerById(it.passenger.id)
+                        viewModel.deletePassenger(it.passenger)
                     }
                 },
                 onChildDrawAction = { canvas, viewHolder,dX,iconDest ->
@@ -115,16 +130,5 @@ class PassengerListFragment : Fragment(), CustomActionFragment {
             passengersAdapter.refresh()
             binding.swipeToRefresh.isRefreshing = true
         }
-    }
-
-    private fun undoDelete(passenger: PassengerLayout) {
-        CustomSnackBar.make(activity?.window?.decorView?.rootView as ViewGroup, passenger.name)
-            .setOnClickListener {
-                viewModel.undoDelete(passenger)
-                it.dismiss()
-            }
-            .setAnchorView(binding.snackbarAnchor)
-            .setDuration(3000)
-            .show()
     }
 }

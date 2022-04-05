@@ -2,15 +2,22 @@
 
 
 buildscript {
+    ext {
+        gradlePluginVersion = '1.5.30'
+        toolsBuildGradleVersion = '7.0.4'
+    }
+
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.2"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
+        classpath "com.android.tools.build:gradle:$toolsBuildGradleVersion"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$gradlePluginVersion"
     }
 }
+
+apply from: "$project.rootDir/versions.gradle"
 
 task clean(type: Delete) {
     delete rootProject.buildDir

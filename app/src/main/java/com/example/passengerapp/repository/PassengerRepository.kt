@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface PassengerRepository {
 
-    fun getPassengersResultStream(): Flow<PagingData<Passenger>>
+    fun getPassengersResultStream(networkPageSize: Int): Flow<PagingData<Passenger>>
 
     suspend fun createPassenger(passenger: PassengerRequest): Resource<PassengerResponse>
 

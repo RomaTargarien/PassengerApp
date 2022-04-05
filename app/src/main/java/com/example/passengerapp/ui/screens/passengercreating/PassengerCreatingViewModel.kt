@@ -43,8 +43,8 @@ class PassengerCreatingViewModel(
         get() = _isBottomSheetExpanded
 
     val name: MutableStateFlow<String> = MutableStateFlow(DEFAULT_NAME)
-    val nameValidationResult =
-        MutableStateFlow<TextInputResource<String>>(TextInputResource.InputInProcess())
+    val nameValidationResult: MutableStateFlow<TextInputResource<String>> =
+        MutableStateFlow(TextInputResource.InputInProcess())
 
     val passengerCreatingState: SharedFlow<Resource<String>>
         get() = _passengerCreatingState
@@ -52,8 +52,8 @@ class PassengerCreatingViewModel(
         get() = _snackBarFlow
 
     val trips: MutableStateFlow<String> = MutableStateFlow(DEFAULT_TRIPS)
-    val tripsValidationResult =
-        MutableStateFlow<TextInputResource<String>>(TextInputResource.InputInProcess())
+    val tripsValidationResult: MutableStateFlow<TextInputResource<String>> =
+        MutableStateFlow(TextInputResource.InputInProcess())
 
     private var nameJob: Job? = null
     private val resultPassengerList: MutableStateFlow<List<AirlineLayout>> = MutableStateFlow(listOf())

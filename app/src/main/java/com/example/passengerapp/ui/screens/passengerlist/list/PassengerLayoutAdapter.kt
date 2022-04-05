@@ -16,30 +16,30 @@ class PassengerLayoutAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PassengerItemView {
         val binding =
             ItemPassengerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PassengerItemView(binding) { position, expanded ->
-            notifyItemChanged(position, expanded)
-        }
+        return PassengerItemView(binding)
     }
 
     override fun onBindViewHolder(holder: PassengerItemView, position: Int) {
         holder.also { passengerItemView ->
             getItem(position)?.also {
                 passengerItemView.setViewModel(it)
-                passengerItemView.bind(it.getLayout(),position)
             }
         }
     }
 
-    override fun onBindViewHolder(
-        holder: PassengerItemView,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-        if (payloads.isEmpty()) {
-            onBindViewHolder(holder, position)
-        } else {
-            holder.onBind(payloads)
-        }
+    override fun onViewAttachedToWindow(holder: PassengerItemView) {
+        super.onViewAttachedToWindow(holder)
+        holder.onViewAttached()
+    }
+
+    override fun onViewDetachedFromWindow(holder: PassengerItemView) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onViewDetached()
+    }
+
+    override fun onViewRecycled(holder: PassengerItemView) {
+        super.onViewRecycled(holder)
+        holder.onViewRecycled()
     }
 
     companion object {

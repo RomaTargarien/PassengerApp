@@ -54,6 +54,12 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        currentFragment = null
+    }
+
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
@@ -64,14 +70,14 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-
     private fun createCustomToolbarAction(action: CustomAction) {
         binding.toolbar.menu.clear()
-        val iconDrawable = DrawableCompat.wrap(ContextCompat.getDrawable(this, action.iconRes)!!)
-        iconDrawable.setTint(Color.WHITE)
+        val icon = ContextCompat.getDrawable(this,action.iconRes)
+            ?.let(DrawableCompat::wrap)
+            ?.apply { setTint(Color.WHITE) }
         val menuItem = binding.toolbar.menu.add("")
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-        menuItem.icon = iconDrawable
+        menuItem.icon = icon
         menuItem.setOnMenuItemClickListener {
             action.onCustomAction.invoke()
             true

@@ -8,7 +8,6 @@ import com.example.passengerapp.model.Passenger
 import com.example.passengerapp.model.request.PassengerRequest
 import com.example.passengerapp.model.response.PassengerResponse
 import com.example.passengerapp.network.PassengerApi
-import com.example.passengerapp.ui.util.Constants.NETWORK_PAGE_SIZE
 import com.example.passengerapp.ui.util.Resource
 import com.example.passengerapp.ui.util.safeCall
 import kotlinx.coroutines.Dispatchers
@@ -17,13 +16,13 @@ import kotlinx.coroutines.withContext
 
 class PassengerRepositoryImpl(private val passengerApi: PassengerApi) : PassengerRepository {
 
-    override fun getPassengersResultStream(): Flow<PagingData<Passenger>> =
+    override fun getPassengersResultStream(networkPageSize: Int): Flow<PagingData<Passenger>> =
         Pager(
             config = PagingConfig(
-                pageSize = NETWORK_PAGE_SIZE,
+                pageSize = networkPageSize,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { PassengerPagingSource(passengerApi) }
+            pagingSourceFactory = { PassengerPagingSource(networkPageSize, passengerApi) }
         ).flow
 
 
